@@ -29,4 +29,26 @@ Software Foundation//DTD Tiles Configuration 3.0//EN"
         <put-attribute name="content"
                        value="/WEB-INF/jsp/detail-post.jsp" />
     </definition>
+    <definition name="login" extends="baseLayout">
+        <put-attribute name="title" value="Dang nhap" />
+        <put-attribute name="content"
+                       value="/WEB-INF/jsp/login.jsp"/>
+        <put-attribute name="footer"
+                       value=""        />
+        <put-attribute name="header"
+                       value=""        />
+        <put-attribute name="sidebar"
+                       value=""        />
+    </definition>
+    <definition name="register" extends="baseLayout">
+        <put-attribute name="title" value="Dang ky" />
+        <put-attribute name="content"
+                       value="/WEB-INF/jsp/register.jsp"/>
+        <put-attribute name="footer"
+                       value=""        />
+        <put-attribute name="header"
+                       value=""        />
+        <put-attribute name="sidebar"
+                       value=""        />
+    </definition>
 </tiles-definitions>

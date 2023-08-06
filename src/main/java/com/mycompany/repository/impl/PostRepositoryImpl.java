@@ -5,7 +5,6 @@
 package com.mycompany.repository.impl;
 
 import com.mycompany.pojo.Post;
-import com.mycompany.pojo.User;
 import com.mycompany.repository.PostRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +12,6 @@ import java.util.Map;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.hibernate.HibernateException;
