@@ -4,6 +4,7 @@
  */
 package com.mycompany.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.util.Collection;
@@ -23,10 +24,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -38,7 +41,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
     @NamedQuery(name = "User.findById", query = "SELECT u FROM User u WHERE u.id = :id"),
-    @NamedQuery(name = "User.findByUserName", query = "SELECT u FROM User u WHERE u.userName = :userName"),
+    @NamedQuery(name = "User.findByUserName", query = "SELECT u FROM User u WHERE u.username = :username"),
     @NamedQuery(name = "User.findByPhone", query = "SELECT u FROM User u WHERE u.phone = :phone"),
     @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
     @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password"),
@@ -61,7 +64,7 @@ public class User implements Serializable {
     @NotNull
     @Size(min = 1, max = 45)
     @Column(name = "user_name")
-    private String userName;
+    private String username;
     // @Pattern(regexp="^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$", message="Invalid phone/fax format, should be as xxx-xxx-xxxx")//if the field contains phone or fax number consider using this annotation to enforce field validation
     @Basic(optional = false)
     @NotNull
@@ -74,7 +77,7 @@ public class User implements Serializable {
     private String email;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 45)
+    @Size(min = 1, max = 100)
     @Column(name = "password")
     private String password;
     @Size(max = 45)
@@ -115,7 +118,12 @@ public class User implements Serializable {
     private Collection<ResultAction> resultActionCollection;
     @OneToMany(mappedBy = "idUser")
     private Collection<Share> shareCollection;
-
+    @Transient
+    private String repeatPassword;
+    
+    @Transient
+    @JsonIgnore
+    private MultipartFile file;
     public User() {
     }
 
@@ -125,7 +133,7 @@ public class User implements Serializable {
 
     public User(Integer id, String userName, String phone, String password) {
         this.id = id;
-        this.userName = userName;
+        this.username = userName;
         this.phone = phone;
         this.password = password;
     }
@@ -139,11 +147,11 @@ public class User implements Serializable {
     }
 
     public String getUserName() {
-        return userName;
+        return username;
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        this.username = userName;
     }
 
     public String getPhone() {
@@ -320,6 +328,34 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "com.mycompany.pojo.User[ id=" + id + " ]";
+    }
+
+    /**
+     * @return the repeatPassword
+     */
+    public String getRepeatPassword() {
+        return repeatPassword;
+    }
+
+    /**
+     * @param repeatPassword the repeatPassword to set
+     */
+    public void setRepeatPassword(String repeatPassword) {
+        this.repeatPassword = repeatPassword;
+    }
+
+    /**
+     * @return the file
+     */
+    public MultipartFile getFile() {
+        return file;
+    }
+
+    /**
+     * @param file the file to set
+     */
+    public void setFile(MultipartFile file) {
+        this.file = file;
     }
     
 }

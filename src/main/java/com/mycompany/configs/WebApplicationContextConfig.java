@@ -29,10 +29,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebMvc
 @EnableTransactionManagement
 @ComponentScan(basePackages = {"com.mycompany.controllers", "com.mycompany.repository", "com.mycompany.service"})
-@PropertySource("classpath:configs.properties")
+
 public class WebApplicationContextConfig implements WebMvcConfigurer {
-    @Autowired
-    private Environment env;
+    
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
@@ -56,16 +55,7 @@ public class WebApplicationContextConfig implements WebMvcConfigurer {
                 .addResourceLocations("/resources/vendor/");
     }
     
-    @Bean
-    public Cloudinary cloudinary() {
-        Cloudinary cloudinary
-                = new Cloudinary(ObjectUtils.asMap(
-                        "cloud_name", this.env.getProperty("cloudinary.cloud_name"),
-                        "api_key", this.env.getProperty("cloudinary.api_id"),
-                        "api_secret", this.env.getProperty("cloudinary.api_secret"),
-                        "secure", true));
-        return cloudinary;
-    }
+    
 
     @Bean
     public CommonsMultipartResolver multipartResolver() {
