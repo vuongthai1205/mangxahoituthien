@@ -6,6 +6,11 @@ package com.mycompany.repository.impl;
 
 import com.mycompany.pojo.Role;
 import com.mycompany.repository.RoleRepository;
+import java.util.List;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -26,5 +31,18 @@ public class RoleRepositoryImpl implements RoleRepository{
         Session session = sessionFactory.getObject().getCurrentSession();
         return session.get(Role.class, id);
     }
+
+    @Override
+    public List<Role> getListRoles() {
+        Session session = sessionFactory.getObject().getCurrentSession();
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Role> criteriaQuery = criteriaBuilder.createQuery(Role.class);
+        
+        Root<Role> root = criteriaQuery.from(Role.class);
+        criteriaQuery.select(root);
+        
+        Query query = session.createQuery(criteriaQuery);
+        return query.getResultList();
+    } 
     
 }

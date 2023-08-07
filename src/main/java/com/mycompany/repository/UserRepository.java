@@ -6,6 +6,7 @@ package com.mycompany.repository;
 
 import com.mycompany.pojo.User;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -14,4 +15,6 @@ import java.util.List;
 public interface UserRepository {
     List<User> getUsers(String name);
     void addOrUpdateUser(User user);
+    List<User> getListUser(Map<String, String> params);
+    User getUserById(int id );
 }

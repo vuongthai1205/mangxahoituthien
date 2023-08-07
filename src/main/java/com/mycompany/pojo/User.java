@@ -41,7 +41,7 @@ import org.springframework.web.multipart.MultipartFile;
 @NamedQueries({
     @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
     @NamedQuery(name = "User.findById", query = "SELECT u FROM User u WHERE u.id = :id"),
-    @NamedQuery(name = "User.findByUserName", query = "SELECT u FROM User u WHERE u.username = :username"),
+    @NamedQuery(name = "User.findByUserName", query = "SELECT u FROM User u WHERE u.userName = :userName"),
     @NamedQuery(name = "User.findByPhone", query = "SELECT u FROM User u WHERE u.phone = :phone"),
     @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
     @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password"),
@@ -64,7 +64,7 @@ public class User implements Serializable {
     @NotNull
     @Size(min = 1, max = 45)
     @Column(name = "user_name")
-    private String username;
+    private String userName;
     // @Pattern(regexp="^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$", message="Invalid phone/fax format, should be as xxx-xxx-xxxx")//if the field contains phone or fax number consider using this annotation to enforce field validation
     @Basic(optional = false)
     @NotNull
@@ -124,6 +124,8 @@ public class User implements Serializable {
     @Transient
     @JsonIgnore
     private MultipartFile file;
+    @Transient
+    private Role role;
     public User() {
     }
 
@@ -133,7 +135,7 @@ public class User implements Serializable {
 
     public User(Integer id, String userName, String phone, String password) {
         this.id = id;
-        this.username = userName;
+        this.userName = userName;
         this.phone = phone;
         this.password = password;
     }
@@ -147,11 +149,11 @@ public class User implements Serializable {
     }
 
     public String getUserName() {
-        return username;
+        return userName;
     }
 
     public void setUserName(String userName) {
-        this.username = userName;
+        this.userName = userName;
     }
 
     public String getPhone() {
@@ -356,6 +358,20 @@ public class User implements Serializable {
      */
     public void setFile(MultipartFile file) {
         this.file = file;
+    }
+
+    /**
+     * @return the role
+     */
+    public Role getRole() {
+        return role;
+    }
+
+    /**
+     * @param role the role to set
+     */
+    public void setRole(Role role) {
+        this.role = role;
     }
     
 }

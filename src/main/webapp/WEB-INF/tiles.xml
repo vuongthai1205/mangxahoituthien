@@ -29,6 +29,16 @@ Software Foundation//DTD Tiles Configuration 3.0//EN"
         <put-attribute name="content"
                        value="/WEB-INF/jsp/detail-post.jsp" />
     </definition>
+    <definition name="user-manager" extends="baseLayout">
+        <put-attribute name="title" value="Danh sach nguoi dung" />
+        <put-attribute name="content"
+                       value="/WEB-INF/jsp/user-manager.jsp" />
+    </definition>
+    <definition name="detail-user" extends="baseLayout">
+        <put-attribute name="title" value="Detail user" />
+        <put-attribute name="content"
+                       value="/WEB-INF/jsp/detail-user.jsp" />
+    </definition>
     <definition name="login" extends="baseLayout">
         <put-attribute name="title" value="Dang nhap" />
         <put-attribute name="content"
