@@ -36,12 +36,19 @@ public class UserRoleRepositoryImpl implements UserRoleRepository{
         Session session = sessionFactory.getObject().getCurrentSession();
         try {
             
+            if (userRole.getId() == null) {
+                session.save(userRole);
+                return true;
+            }
+            else{
+                session.update(userRole);
+                return true;
+            }
             
             
-            session.save(userRole);
             
 
-            return true;
+            
         } catch (HibernateException ex) {
             ex.printStackTrace();
             return false;
@@ -63,6 +70,20 @@ public class UserRoleRepositoryImpl implements UserRoleRepository{
         
         Query query = session.createQuery(criteriaQuery );
         return query.getResultList();
+    }
+
+    @Override
+    public UserRole getUserRoleByUser(User user) {
+        Session session = sessionFactory.getObject().getCurrentSession();
+        CriteriaBuilder b = session.getCriteriaBuilder();
+        CriteriaQuery<UserRole> criteriaQuery  = b.createQuery(UserRole.class);
+        Root root = criteriaQuery.from(UserRole.class);
+        criteriaQuery.select(root);
+        
+        criteriaQuery.where(b.equal(root.get("idUser"), user));
+        
+        Query query = session.createQuery(criteriaQuery );
+        return (UserRole) query.getSingleResult();
     }
     
 }

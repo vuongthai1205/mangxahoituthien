@@ -6,6 +6,7 @@ package com.mycompany.service;
 
 import com.mycompany.pojo.User;
 import java.util.List;
+import java.util.Map;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
@@ -15,4 +16,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 public interface UserService extends UserDetailsService{
     List<User> getUsers(String name);
     boolean addOrUpdateUser(User user);
+    List<User> getListUser(Map<String, String> params);
+    User getUserById(int id);
 }

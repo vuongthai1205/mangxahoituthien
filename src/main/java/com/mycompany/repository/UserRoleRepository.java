@@ -16,4 +16,5 @@ import java.util.List;
 public interface UserRoleRepository {
     boolean addUserRole(UserRole userRole);
     List<UserRole> getUserRole(User user);
+    UserRole getUserRoleByUser(User user);
 }

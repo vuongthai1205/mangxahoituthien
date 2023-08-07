@@ -7,6 +7,7 @@ package com.mycompany.configs;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.mycompany.formatter.AuctionStatusFormatter;
+import com.mycompany.formatter.RoleFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -40,6 +41,7 @@ public class WebApplicationContextConfig implements WebMvcConfigurer {
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addFormatter(new AuctionStatusFormatter());
+        registry.addFormatter(new RoleFormatter());
     }
 
     @Override

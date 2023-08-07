@@ -6,7 +6,9 @@ package com.mycompany.repository.impl;
 
 import com.mycompany.pojo.User;
 import com.mycompany.repository.UserRepository;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -25,11 +27,11 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional
-public class UserRepositoryImpl implements UserRepository{
+public class UserRepositoryImpl implements UserRepository {
 
     @Autowired
     private LocalSessionFactoryBean sessionFactory;
-    
+
     @Override
     public List<User> getUsers(String name) {
         Session session = this.sessionFactory
@@ -40,14 +42,14 @@ public class UserRepositoryImpl implements UserRepository{
         CriteriaQuery<User> q = b.createQuery(User.class);
         Root root = q.from(User.class);
         q.select(root);
-        
+
         if (!name.isEmpty()) {
-            Predicate p = b.equal(root.get("username").as(String.class), name.trim());
+            Predicate p = b.equal(root.get("userName").as(String.class), name.trim());
             q = q.where(p);
         }
-        
+
         Query query = session.createQuery(q);
-         
+
         return query.getResultList();
     }
 
@@ -60,11 +62,44 @@ public class UserRepositoryImpl implements UserRepository{
             if (user.getId() == null) {
                 session.save(user);
             } else {
+                
                 session.update(user);
             }
         } catch (HibernateException ex) {
             ex.printStackTrace();
         }
     }
-    
+
+    @Override
+    public List<User> getListUser(Map<String, String> params) {
+        Session session = this.sessionFactory
+                .getObject()
+                .getCurrentSession();
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+        Root root = criteriaQuery.from(User.class);
+
+        criteriaQuery.select(root);
+        if (params != null) {
+            List<Predicate> predicates = new ArrayList<>();
+            String kw = params.get("kw");
+            if (kw != null && !kw.isEmpty()) {
+                predicates.add(criteriaBuilder.like(root.get("userName"), String.format("%%%s%%", kw)));
+            }
+            criteriaQuery.where(predicates.toArray(Predicate[]::new));
+        }
+
+        Query query = session.createQuery(criteriaQuery);
+
+        return query.getResultList();
+    }
+
+    @Override
+    public User getUserById(int id) {
+        Session session = this.sessionFactory
+                .getObject()
+                .getCurrentSession();
+        return session.get(User.class, id);
+    }
+
 }
