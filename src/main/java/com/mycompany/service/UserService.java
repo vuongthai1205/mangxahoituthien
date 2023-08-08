@@ -18,4 +18,5 @@ public interface UserService extends UserDetailsService{
     boolean addOrUpdateUser(User user);
     List<User> getListUser(Map<String, String> params);
     User getUserById(int id);
+    boolean deleteUser(int id);
 }
