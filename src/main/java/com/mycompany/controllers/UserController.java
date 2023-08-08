@@ -26,72 +26,78 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Controller
 public class UserController {
+
     @Autowired
     private UserService userService;
-    
+
     @Autowired
     private RoleService roleService;
-    
+
     @Autowired
     private UserRoleService userRoleService;
-    
+
     @ModelAttribute
-    public void commAttr(Model model){
+    public void commAttr(Model model) {
         model.addAttribute("roles", this.roleService.getListRoles());
     }
-    
+
     @GetMapping("/user-manager")
-    public String userManager(Model model,@RequestParam Map<String, String> params){
-        model.addAttribute("users",this.userService.getListUser(params));
+    public String userManager(Model model, @RequestParam Map<String, String> params) {
+        model.addAttribute("users", this.userService.getListUser(params));
         return "user-manager";
     }
-    
+
+    @GetMapping("/add-user")
+    public String addUser(Model model) {
+        model.addAttribute("user", new User());
+        return "add-user";
+    }
+
     @GetMapping("/detail-user/{id}")
-    public String detailUser(Model model, @PathVariable(value = "id") int id){
+    public String detailUser(Model model, @PathVariable(value = "id") int id) {
         User user = this.userService.getUserById(id);
-        model.addAttribute("user",user);
+        model.addAttribute("user", user);
         model.addAttribute("userRole", this.userRoleService.getUserRoleByUser(user));
         return "detail-user";
     }
-    
+
     @PostMapping("/detail-user")
-    public String updateUser(@ModelAttribute(value = "user") @Valid User user, BindingResult rs){
+    public String updateUser(@ModelAttribute(value = "user") @Valid User user, BindingResult rs) {
         if (!rs.hasErrors()) {
-            this.userService.addOrUpdateUser(user);
-            return "redirect:/user-manager";
+            if (this.userService.addOrUpdateUser(user) == true) {
+                return "redirect:/user-manager";
+            }
         }
         return "detail-user";
     }
-    
+
     @GetMapping("/login")
-    public String login(){
+    public String login() {
         return "login";
     }
-    
+
     @GetMapping("/register")
-    public String register(Model model){
+    public String register(Model model) {
         model.addAttribute("user", new User());
         return "register";
     }
-    
+
     @PostMapping("/register")
-    public String signin(Model model,@ModelAttribute(value = "user") User user){
+    public String signin(Model model, @ModelAttribute(value = "user") User user) {
         String errMsg;
         if (user.getRepeatPassword().equals(user.getPassword())) {
             if (this.userService.addOrUpdateUser(user) == true) {
                 return "redirect:/login";
-            }
-            else{
+            } else {
                 errMsg = "Has error";
             }
-            
-        }
-        else{
+
+        } else {
             errMsg = "Password not match";
         }
-        
+
         model.addAttribute("errMsg", errMsg);
-        
+
         return "register";
     }
 }

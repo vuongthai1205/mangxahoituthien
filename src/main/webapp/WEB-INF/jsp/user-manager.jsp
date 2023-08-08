@@ -15,6 +15,7 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary">User manager</h6>
+        <a href="<c:url value="/add-user"/>">Add user</a>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -25,7 +26,7 @@
                         <th>User name</th>
                         <th>First name</th>
                         <th>Last name</th>
-                        <th>Age</th>
+                        <th>Date Of birth</th>
                         <th>Avatar</th>
                         <th>Gender</th>
                         <th>Address</th>
@@ -41,11 +42,15 @@
                             <td><c:out value="${user.userName}"/></td>
                             <td><c:out value="${user.firstName}"/></td>
                             <td><c:out value="${user.lastName}"/></td>
-                            <td><c:out value="${user.age}"/></td>
+                            <td><c:out value="${user.dateOfBirth}"/></td>
                             <td><img width="200" alt="${user.userName}" src="<c:out value="${user.avatar}"/>"/>  </td>
                             <td>
                                 <c:choose>
-                                    <c:when test="${user.gender ==1}">
+                                    
+                                    <c:when test="${user.gender == null}">
+                                        None
+                                    </c:when>
+                                    <c:when test="${user.gender == 1}">
                                         Male
                                     </c:when>
                                     <c:otherwise>
@@ -58,9 +63,9 @@
                             <td><c:out value="${user.updateAt}"/></td>
                             <td>
                                 <sec:authorize access="hasRole('ROLE_ADMIN')">
-                                    <c:url value="/api/post/${user.id}" var="apiDel"/>
+                                    <c:url value="/api/user/${user.id}" var="apiDel"/>
                                     <a href="<c:url value="/detail-user/${user.id}"/>">Cap nhat</a>
-                                    <button class="btn btn-danger" onclick="delPro('${apiDel}', ${post.id})">Xóa</button>
+                                    <button class="btn btn-danger" onclick="delPro('${apiDel}', ${user.id})">Xóa</button>
                                 </sec:authorize> 
                                 <sec:authorize access="hasRole('ROLE_MEMBER')">
                                     Ban khong co quyen sua hoac xoa
@@ -74,3 +79,4 @@
         </div>
     </div>
 </div>
+    <script src="<c:url value="/js/main.js" />"></script>

@@ -62,7 +62,7 @@ public class UserRepositoryImpl implements UserRepository {
             if (user.getId() == null) {
                 session.save(user);
             } else {
-                
+
                 session.update(user);
             }
         } catch (HibernateException ex) {
@@ -100,6 +100,24 @@ public class UserRepositoryImpl implements UserRepository {
                 .getObject()
                 .getCurrentSession();
         return session.get(User.class, id);
+    }
+
+    @Override
+    public boolean deleteUser(int id) {
+        Session session = this.sessionFactory
+                .getObject()
+                .getCurrentSession();
+        User user = this.getUserById(id);
+        try {
+            Query deleteQuery = session.createQuery("DELETE FROM UserRole ur WHERE ur.idUser = :user");
+            deleteQuery.setParameter("user", user);
+            deleteQuery.executeUpdate();
+            session.delete(user);
+            return true;
+        } catch (HibernateException ex) {
+            ex.printStackTrace();
+            return false;
+        }
     }
 
 }
