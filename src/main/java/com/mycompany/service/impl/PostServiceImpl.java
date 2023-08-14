@@ -23,8 +23,8 @@ import org.springframework.stereotype.Service;
  * @author vuongthai1205
  */
 @Service
-public class PostServiceImpl implements PostService{
-    
+public class PostServiceImpl implements PostService {
+
     @Autowired
     private PostRepository postRepository;
     @Autowired
@@ -42,18 +42,25 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public boolean addOrUpdatePost(Post post) {
-        if (!post.getFile().isEmpty()) {
+        Date currentDate = new Date();
+
+        if (post.getId() == null) {
+            // This is a new post
+            post.setCreateAt(currentDate);
+        }
+
+        if (post.getFile() != null && !post.getFile().isEmpty()) {
             try {
                 Map res = this.cloudinary.uploader().upload(post.getFile().getBytes(), ObjectUtils.asMap("resource_type", "auto"));
                 post.setImage(res.get("secure_url").toString());
             } catch (IOException ex) {
-                Logger.getLogger(PostService.class.getName()).log(Level.SEVERE, null, ex);
+                // Handle the exception appropriately, e.g., throw a custom exception or return an error response
+                Logger.getLogger(PostService.class.getName()).log(Level.SEVERE, "Error uploading image to Cloudinary", ex);
             }
         }
-        
-        Date date = new Date();
-        post.setUpdateAt(date);
-         
+
+        post.setUpdateAt(currentDate);
+
         return this.postRepository.addOrUpdatePost(post);
     }
 
@@ -61,5 +68,5 @@ public class PostServiceImpl implements PostService{
     public boolean deletePost(int id) {
         return this.postRepository.deletePost(id);
     }
-    
+
 }

@@ -15,7 +15,7 @@
     <div class="form-floating mb-3 mt-3">
         <label for="name">User Name</label>
         <form:input type="text" class="form-control" 
-                    path="userName" placeholder="Enter User name" />
+                    path="username" placeholder="Enter User name" />
     </div>
     <div class="form-floating">
         <label for="des">First Name</label>

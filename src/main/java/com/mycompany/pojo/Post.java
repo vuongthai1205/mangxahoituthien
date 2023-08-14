@@ -20,16 +20,17 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -38,18 +39,10 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Entity
 @Table(name = "post")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Post.findAll", query = "SELECT p FROM Post p"),
-    @NamedQuery(name = "Post.findById", query = "SELECT p FROM Post p WHERE p.id = :id"),
-    @NamedQuery(name = "Post.findByTitle", query = "SELECT p FROM Post p WHERE p.title = :title"),
-    @NamedQuery(name = "Post.findByImage", query = "SELECT p FROM Post p WHERE p.image = :image"),
-    @NamedQuery(name = "Post.findByStartPrice", query = "SELECT p FROM Post p WHERE p.startPrice = :startPrice"),
-    @NamedQuery(name = "Post.findByAuctionStartTime", query = "SELECT p FROM Post p WHERE p.auctionStartTime = :auctionStartTime"),
-    @NamedQuery(name = "Post.findByAuctionEndTime", query = "SELECT p FROM Post p WHERE p.auctionEndTime = :auctionEndTime"),
-    @NamedQuery(name = "Post.findByAuctionWinnerId", query = "SELECT p FROM Post p WHERE p.auctionWinnerId = :auctionWinnerId"),
-    @NamedQuery(name = "Post.findByCreateAt", query = "SELECT p FROM Post p WHERE p.createAt = :createAt"),
-    @NamedQuery(name = "Post.findByUpdateAt", query = "SELECT p FROM Post p WHERE p.updateAt = :updateAt")})
+@Getter
+@Setter
+@NoArgsConstructor
+@Data
 public class Post implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -91,8 +84,7 @@ public class Post implements Serializable {
     @JsonIgnore
     private AuctionStatus auctionStatus;
     @JoinColumn(name = "id_user", referencedColumnName = "id")
-    @ManyToOne
-    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
     private User idUser;
     @OneToMany(mappedBy = "idPost")
     @JsonIgnore
@@ -115,108 +107,12 @@ public class Post implements Serializable {
     @JsonIgnore
     private MultipartFile file;
 
-    public Post() {
-    }
 
     public Post(Integer id) {
         this.id = id;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public Double getStartPrice() {
-        return startPrice;
-    }
-
-    public void setStartPrice(Double startPrice) {
-        this.startPrice = startPrice;
-    }
-
-    public Date getAuctionStartTime() {
-        return auctionStartTime;
-    }
-
-    public void setAuctionStartTime(Date auctionStartTime) {
-        this.auctionStartTime = auctionStartTime;
-    }
-
-    public String getAuctionEndTime() {
-        return auctionEndTime;
-    }
-
-    public void setAuctionEndTime(String auctionEndTime) {
-        this.auctionEndTime = auctionEndTime;
-    }
-
-    public Integer getAuctionWinnerId() {
-        return auctionWinnerId;
-    }
-
-    public void setAuctionWinnerId(Integer auctionWinnerId) {
-        this.auctionWinnerId = auctionWinnerId;
-    }
-
-    public Date getCreateAt() {
-        return createAt;
-    }
-
-    public void setCreateAt(Date createAt) {
-        this.createAt = createAt;
-    }
-
-    public Date getUpdateAt() {
-        return updateAt;
-    }
-
-    public void setUpdateAt(Date updateAt) {
-        this.updateAt = updateAt;
-    }
-
-    public AuctionStatus getAuctionStatus() {
-        return auctionStatus;
-    }
-
-    public void setAuctionStatus(AuctionStatus auctionStatus) {
-        this.auctionStatus = auctionStatus;
-    }
-
-    public User getIdUser() {
-        return idUser;
-    }
-
-    public void setIdUser(User idUser) {
-        this.idUser = idUser;
-    }
+    
 
     @XmlTransient
     public Collection<LikePost> getLikePostCollection() {
@@ -288,18 +184,5 @@ public class Post implements Serializable {
         return "com.mycompany.pojo.Post[ id=" + id + " ]";
     }
 
-    /**
-     * @return the file
-     */
-    public MultipartFile getFile() {
-        return file;
-    }
-
-    /**
-     * @param file the file to set
-     */
-    public void setFile(MultipartFile file) {
-        this.file = file;
-    }
     
 }

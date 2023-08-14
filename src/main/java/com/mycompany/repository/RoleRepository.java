@@ -5,6 +5,7 @@
 package com.mycompany.repository;
 
 import com.mycompany.pojo.Role;
+import com.mycompany.pojo.User;
 import java.util.List;
 
 /**
@@ -14,4 +15,5 @@ import java.util.List;
 public interface RoleRepository {
     Role getRole(int id);
     List<Role> getListRoles();
+    List<Role> getListRolesByUser(User user);
 }

@@ -4,36 +4,53 @@
  */
 package com.mycompany.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 /**
  *
  * @author vuongthai1205
  */
 @Entity
+@Getter
+@Setter
+@Data
+@NoArgsConstructor
 @Table(name = "role")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Role.findAll", query = "SELECT r FROM Role r"),
-    @NamedQuery(name = "Role.findById", query = "SELECT r FROM Role r WHERE r.id = :id"),
-    @NamedQuery(name = "Role.findByNameRole", query = "SELECT r FROM Role r WHERE r.nameRole = :nameRole")})
 public class Role implements Serializable {
+
+    @PrePersist
+    protected void onCreate() {
+        this.createAt = new Date(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updateAt = new Date(System.currentTimeMillis());
+    }
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -46,11 +63,20 @@ public class Role implements Serializable {
     @Size(min = 1, max = 45)
     @Column(name = "name_role")
     private String nameRole;
-    @OneToMany(mappedBy = "idRole")
-    private Collection<UserRole> userRoleCollection;
-
-    public Role() {
-    }
+    
+    
+    @ManyToMany(mappedBy = "roles")
+    @Fetch(value = FetchMode.SELECT)
+    @JsonIgnore
+    private Set<User> user=new HashSet<>();
+    
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "create_at")
+    private Date createAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "update_at")
+    private Date updateAt;
 
     public Role(Integer id) {
         this.id = id;
@@ -61,29 +87,9 @@ public class Role implements Serializable {
         this.nameRole = nameRole;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getNameRole() {
-        return nameRole;
-    }
-
-    public void setNameRole(String nameRole) {
+    public Role(String nameRole) {
+        
         this.nameRole = nameRole;
-    }
-
-    @XmlTransient
-    public Collection<UserRole> getUserRoleCollection() {
-        return userRoleCollection;
-    }
-
-    public void setUserRoleCollection(Collection<UserRole> userRoleCollection) {
-        this.userRoleCollection = userRoleCollection;
     }
 
     @Override
@@ -110,5 +116,5 @@ public class Role implements Serializable {
     public String toString() {
         return "com.mycompany.pojo.Role[ id=" + id + " ]";
     }
-    
+
 }

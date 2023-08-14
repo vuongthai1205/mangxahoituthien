@@ -4,11 +4,15 @@
  */
 package com.mycompany.repository.impl;
 
+import com.mycompany.pojo.Role;
 import com.mycompany.pojo.User;
+import com.mycompany.repository.RoleRepository;
 import com.mycompany.repository.UserRepository;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -31,6 +35,8 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Autowired
     private LocalSessionFactoryBean sessionFactory;
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Override
     public List<User> getUsers(String name) {
@@ -44,7 +50,7 @@ public class UserRepositoryImpl implements UserRepository {
         q.select(root);
 
         if (!name.isEmpty()) {
-            Predicate p = b.equal(root.get("userName").as(String.class), name.trim());
+            Predicate p = b.equal(root.get("username").as(String.class), name.trim());
             q = q.where(p);
         }
 
@@ -60,6 +66,18 @@ public class UserRepositoryImpl implements UserRepository {
                 .getCurrentSession();
         try {
             if (user.getId() == null) {
+                if (user.getRole() == null) {
+                    Set<Role> roles = new HashSet<>();
+                    Role role = this.roleRepository.getRole(2);
+                    roles.add(role);
+                    user.setRoles(roles);
+                } else {
+                    Set<Role> roles = new HashSet<>();
+                    Role role = this.roleRepository.getRole(user.getRole().getId());
+                    roles.add(role);
+                    user.setRoles(roles);
+                }
+
                 session.save(user);
             } else {
 
@@ -84,7 +102,7 @@ public class UserRepositoryImpl implements UserRepository {
             List<Predicate> predicates = new ArrayList<>();
             String kw = params.get("kw");
             if (kw != null && !kw.isEmpty()) {
-                predicates.add(criteriaBuilder.like(root.get("userName"), String.format("%%%s%%", kw)));
+                predicates.add(criteriaBuilder.like(root.get("username"), String.format("%%%s%%", kw)));
             }
             criteriaQuery.where(predicates.toArray(Predicate[]::new));
         }
@@ -118,6 +136,20 @@ public class UserRepositoryImpl implements UserRepository {
             ex.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public User getUserByUsername(String username) {
+        Session session = this.sessionFactory
+                .getObject()
+                .getCurrentSession();
+
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+        Root<User> root = criteriaQuery.from(User.class);
+        criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("username"), username));
+
+        return session.createQuery(criteriaQuery).uniqueResult();
     }
 
 }

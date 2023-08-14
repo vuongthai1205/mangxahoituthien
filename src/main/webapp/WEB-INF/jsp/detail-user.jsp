@@ -21,8 +21,8 @@
     <div class="form-floating mb-3 mt-3">
         <label for="name">User Name</label>
         <form:input type="text" class="form-control" 
-                    path="userName" placeholder="Tieu de bai viet" />
-        <form:errors path="userName" cssClass="text-danger" />
+                    path="username" placeholder="Tieu de bai viet" />
+        <form:errors path="username" cssClass="text-danger" />
     </div>
     <div class="form-floating">
         <label for="des">First Name</label>
@@ -54,21 +54,7 @@
         </c:if>
     </div>
     <div class="form-floating mb-3 mt-3">
-        <form:select class="form-select" name="auctionStatus" path="role">
-            <c:forEach items="${roles}" var="a">
-                <c:choose>
-                    <c:when test="${a.id == userRole.idRole.id}">
-                        <option value="${a.id}" selected>${a.nameRole}</option>
-                    </c:when>
-                    <c:otherwise>
-                        <option value="${a.id}">${a.nameRole}</option>
-                    </c:otherwise>
-                </c:choose>
-                
-                
-                    
-            </c:forEach>
-        </form:select>
+        
 
         <label for="auctionStatus" class="form-label">User Role</label>
     </div>
