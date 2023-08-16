@@ -18,4 +18,5 @@ public interface UserRepository {
     List<User> getListUser(Map<String, String> params);
     User getUserById(int id );
     boolean deleteUser(int id);
+    User getUserByUsername(String username );
 }

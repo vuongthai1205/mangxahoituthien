@@ -9,10 +9,8 @@ import com.cloudinary.utils.ObjectUtils;
 import com.mycompany.formatter.CustomDateFormatter;
 import com.mycompany.pojo.Role;
 import com.mycompany.pojo.User;
-import com.mycompany.pojo.UserRole;
 import com.mycompany.repository.RoleRepository;
 import com.mycompany.repository.UserRepository;
-import com.mycompany.repository.UserRoleRepository;
 import com.mycompany.service.PostService;
 import com.mycompany.service.UserService;
 import java.io.IOException;
@@ -42,11 +40,7 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private UserRoleRepository userRoleRepository;
-    @Autowired
-    private RoleRepository roleRepository;
+    
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
     @Autowired
@@ -66,15 +60,15 @@ public class UserServiceImpl implements UserService {
         }
         User u = users.get(0);
         Set<GrantedAuthority> authorities = new HashSet<>();
-
-        List<UserRole> listUserRoles = userRoleRepository.getUserRole(u);
-        listUserRoles.forEach(userRole -> {
-            Role role = roleRepository.getRole(userRole.getIdRole().getId());
-            authorities.add(new SimpleGrantedAuthority(role.getNameRole()));
+            
+        u.getRoles().forEach(item  -> {
+            authorities.add(new SimpleGrantedAuthority(item.getNameRole()));
         });
+            
+        
 
         return new org.springframework.security.core.userdetails.User(
-                u.getUserName(), u.getPassword(), authorities);
+                u.getUsername(), u.getPassword(), authorities);
     }
 
     @Override
@@ -90,8 +84,6 @@ public class UserServiceImpl implements UserService {
                 }
             }
             user.setPassword(passwordEncoder.encode(pass));
-            Date date = new Date();
-            user.setCreateAt(date);
             if (user.getDateString() != null) {
                 customDateFormatter = new CustomDateFormatter("yyyy-MM-dd");
                 try {
@@ -101,22 +93,13 @@ public class UserServiceImpl implements UserService {
                     Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            
+            
 
             // Lưu user vào cơ sở dữ liệu trước khi tạo userRole
             this.userRepository.addOrUpdateUser(user);
             // Lấy role từ repository hoặc cách nào bạn đã cấu hình
-            Role role;
-            if (user.getRole() == null) {
-                role = this.roleRepository.getRole(2);
-            } else {
-                role = this.roleRepository.getRole(user.getRole().getId());
-            }
-
-            // Tạo và gán userRole
-            UserRole userRole = new UserRole();
-            userRole.setIdUser(user);  // Gán user đã lưu
-            userRole.setIdRole(role);
-            return this.userRoleRepository.addUserRole(userRole);
+            return true;
         } else {
             if (!user.getFile().isEmpty()) {
                 try {
@@ -126,19 +109,11 @@ public class UserServiceImpl implements UserService {
                     Logger.getLogger(PostService.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            Date date = new Date();
-            user.setUpdateAt(date);
 
-            Role role = roleRepository.getRole(user.getRole().getId());
-            user.setRole(role);
-
-            UserRole userRole = userRoleRepository.getUserRoleByUser(user);
-
-            userRole.setIdRole(role);
-            userRole.setIdUser(user);
+            
 
             this.userRepository.addOrUpdateUser(user);
-            return this.userRoleRepository.addUserRole(userRole);
+            return true;
         }
     }
 
@@ -156,6 +131,30 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean deleteUser(int id) {
         return this.userRepository.deleteUser(id);
+    }
+
+    @Override
+    public int checkUser(String username, String password) {
+        List<User> users = userRepository.getUsers(username);
+        if (users.isEmpty()) {
+            throw new UsernameNotFoundException("Không tồn tại!");
+        }
+        User u = users.get(0);
+        if (u != null){
+            if (passwordEncoder.matches( password, u.getPassword()) == true) {
+                return 1;
+            }
+            else{
+                return 2;
+            }
+            
+        }
+        return 0;
+    }
+
+    @Override
+    public User getUserByUsername(String username) {
+        return this.userRepository.getUserByUsername(username);
     }
 
 }

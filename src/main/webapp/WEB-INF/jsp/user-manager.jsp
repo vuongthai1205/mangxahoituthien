@@ -39,11 +39,11 @@
                     <c:forEach items="${users}" var="user">
                         <tr>
                             <td><c:out value="${user.id}"/></td>
-                            <td><c:out value="${user.userName}"/></td>
+                            <td><c:out value="${user.username}"/></td>
                             <td><c:out value="${user.firstName}"/></td>
                             <td><c:out value="${user.lastName}"/></td>
                             <td><c:out value="${user.dateOfBirth}"/></td>
-                            <td><img width="200" alt="${user.userName}" src="<c:out value="${user.avatar}"/>"/>  </td>
+                            <td><img width="200" alt="${user.username}" src="<c:out value="${user.avatar}"/>"/>  </td>
                             <td>
                                 <c:choose>
                                     

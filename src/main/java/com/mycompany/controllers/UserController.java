@@ -6,7 +6,6 @@ package com.mycompany.controllers;
 
 import com.mycompany.pojo.User;
 import com.mycompany.service.RoleService;
-import com.mycompany.service.UserRoleService;
 import com.mycompany.service.UserService;
 import java.util.Map;
 import javax.validation.Valid;
@@ -33,8 +32,7 @@ public class UserController {
     @Autowired
     private RoleService roleService;
 
-    @Autowired
-    private UserRoleService userRoleService;
+    
 
     @ModelAttribute
     public void commAttr(Model model) {
@@ -57,7 +55,6 @@ public class UserController {
     public String detailUser(Model model, @PathVariable(value = "id") int id) {
         User user = this.userService.getUserById(id);
         model.addAttribute("user", user);
-        model.addAttribute("userRole", this.userRoleService.getUserRoleByUser(user));
         return "detail-user";
     }
 
@@ -100,4 +97,5 @@ public class UserController {
 
         return "register";
     }
+    
 }

@@ -39,7 +39,7 @@
                             <div class="form-group">
                                 
                                 <form:input type="text" class="form-control form-control-user"
-                                                path="userName" placeholder="Username" />
+                                                path="username" placeholder="Username" />
                             </div>
                             <div class="form-group">
                                 <label>Anh dai dien</label>
