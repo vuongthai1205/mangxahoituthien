@@ -48,14 +48,31 @@
         <label for="file">Avatar</label>
         <form:input type="file" class="form-control" 
                     path="file" id="file"  />
-        
+
         <c:if test="${user.avatar != null}">
             <img src="${user.avatar}" width="120" />
         </c:if>
     </div>
     <div class="form-floating mb-3 mt-3">
-        
 
+        <c:forEach items="${user.roles}" var="a">
+            <form:select class="form-select" name="auctionStatus" path="role">
+                <c:forEach items="${roles}" var="i">
+                    <c:choose>
+                        <c:when test="${i.id == a.id}">
+                            <option value="${i.id}" selected>${i.nameRole}</option>
+                        </c:when>
+                        <c:otherwise>
+                            <option value="${i.id}">${i.nameRole}</option>
+                        </c:otherwise>
+                    </c:choose>
+                </c:forEach>
+
+
+            </form:select>
+
+
+        </c:forEach>
         <label for="auctionStatus" class="form-label">User Role</label>
     </div>
 
