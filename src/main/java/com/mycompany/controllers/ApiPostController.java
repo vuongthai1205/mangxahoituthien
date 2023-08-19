@@ -4,12 +4,19 @@
  */
 package com.mycompany.controllers;
 
+import com.mycompany.DTO.PostResponseDTO;
+import com.mycompany.DTO.UserResponseDTO;
 import com.mycompany.pojo.Post;
+import com.mycompany.pojo.User;
 import com.mycompany.service.PostService;
+import com.mycompany.service.UserService;
+import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,16 +40,40 @@ public class ApiPostController {
 
     @Autowired
     private PostService postService;
-
-    @GetMapping("/post")
+    @Autowired
+    private UserService userService;
     
-    public ResponseEntity<List<Post>> getPosts(@RequestParam Map<String, String> params) {
+    @GetMapping("/post/")
+    @CrossOrigin
+    public ResponseEntity<List<PostResponseDTO>> getPosts(@RequestParam Map<String, String> params) {
+        List<PostResponseDTO> postResponseDTOs = new ArrayList<>();
+        List<Post> posts = this.postService.getPostList(params);
 
-        return new ResponseEntity<>(this.postService.getPostList(params), HttpStatus.OK);
+        posts.forEach(post -> {
+            UserResponseDTO userResponseDTO = new UserResponseDTO();
+            PostResponseDTO postResponseDTO = new PostResponseDTO();
+
+            postResponseDTO.setTitle(post.getTitle());
+            postResponseDTO.setContent(post.getContent());
+            postResponseDTO.setImage(post.getImage());
+            postResponseDTO.setCreateAt(post.getCreateAt());
+            postResponseDTO.setUpdateAt(post.getUpdateAt());
+
+            userResponseDTO.setUsername(post.getIdUser().getUsername());
+            userResponseDTO.setAvatar(post.getIdUser().getAvatar());
+
+            postResponseDTO.setUser(userResponseDTO);
+            postResponseDTOs.add(postResponseDTO);
+
+        });
+
+        return new ResponseEntity<>(postResponseDTOs, HttpStatus.OK);
     }
-    
-    @PostMapping("/post/add")
-    public ResponseEntity<String> addOrUpdatePost(@RequestBody Post post) {
+
+    @PostMapping(path = "/post/add/", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> addOrUpdatePost( @RequestBody Post post, Principal user) {
+        User u = this.userService.getUserByUsername(user.getName());
+        post.setIdUser(u);
         boolean isAddedOrUpdated = postService.addOrUpdatePost(post);
 
         if (isAddedOrUpdated) {
@@ -52,11 +83,10 @@ public class ApiPostController {
         }
     }
 
-    
     @DeleteMapping("/post/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable(value = "id") int id) {
         this.postService.deletePost(id);
     }
-    
+
 }

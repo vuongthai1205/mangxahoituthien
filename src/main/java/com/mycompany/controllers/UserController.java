@@ -4,9 +4,11 @@
  */
 package com.mycompany.controllers;
 
+import com.mycompany.pojo.Role;
 import com.mycompany.pojo.User;
 import com.mycompany.service.RoleService;
 import com.mycompany.service.UserService;
+import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

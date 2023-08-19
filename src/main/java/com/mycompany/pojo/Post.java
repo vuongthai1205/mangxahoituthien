@@ -58,7 +58,7 @@ public class Post implements Serializable {
     @Size(max = 65535)
     @Column(name = "content")
     private String content;
-    @Size(max = 150)
+    @Size(max = 250)
     @Column(name = "image")
     private String image;
     

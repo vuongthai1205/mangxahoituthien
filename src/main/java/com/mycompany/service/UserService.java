@@ -21,4 +21,5 @@ public interface UserService extends UserDetailsService{
     boolean deleteUser(int id);
     int checkUser(String username, String password);
     User getUserByUsername(String username);
+    boolean authUser(String username, String password);
 }

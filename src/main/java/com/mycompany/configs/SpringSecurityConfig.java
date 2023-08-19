@@ -88,7 +88,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .accessDeniedPage("/login?accessDenied");
 
         http.authorizeRequests()
-                .antMatchers("/").authenticated();
+                .antMatchers("/**").permitAll();
 
         http.csrf().disable();
     }
