@@ -30,5 +30,11 @@ public class AuctionStatusRepositoryImpl implements AuctionStatusRepository{
         Query q = session.createQuery("FROM AuctionStatus");
         return q.getResultList();
     }
+
+    @Override
+    public AuctionStatus getAuctionStatus(int id) {
+        Session session = this.sessionFactory.getObject().getCurrentSession();
+        return session.get(AuctionStatus.class, id);
+    }
     
 }

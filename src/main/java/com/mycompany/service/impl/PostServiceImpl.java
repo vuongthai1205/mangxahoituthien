@@ -6,11 +6,12 @@ package com.mycompany.service.impl;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.mycompany.pojo.AuctionStatus;
 import com.mycompany.pojo.Post;
+import com.mycompany.repository.AuctionStatusRepository;
 import com.mycompany.repository.PostRepository;
 import com.mycompany.service.PostService;
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -28,6 +29,8 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private PostRepository postRepository;
     @Autowired
+    private AuctionStatusRepository auctionStatusRepository;
+    @Autowired
     private Cloudinary cloudinary;
 
     @Override
@@ -42,12 +45,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public boolean addOrUpdatePost(Post post) {
-        Date currentDate = new Date();
 
-        if (post.getId() == null) {
-            // This is a new post
-            post.setCreateAt(currentDate);
-        }
+        
 
         if (post.getFile() != null && !post.getFile().isEmpty()) {
             try {
@@ -58,8 +57,21 @@ public class PostServiceImpl implements PostService {
                 Logger.getLogger(PostService.class.getName()).log(Level.SEVERE, "Error uploading image to Cloudinary", ex);
             }
         }
+        
+        if(post.getId() != null){
+            AuctionStatus auctionStatus = this.auctionStatusRepository.getAuctionStatus(post.getAuctionStatus().getId());
+        post.setAuctionStatus(auctionStatus);
+            
+        }
+        else{
+            AuctionStatus auctionStatus = this.auctionStatusRepository.getAuctionStatus(1);
+        post.setAuctionStatus(auctionStatus);
+        }
+        
+        
+        
+        
 
-        post.setUpdateAt(currentDate);
 
         return this.postRepository.addOrUpdatePost(post);
     }

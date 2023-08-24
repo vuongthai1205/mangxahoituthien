@@ -21,6 +21,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -45,6 +47,15 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 public class Post implements Serializable {
 
+    @PrePersist
+    protected void onCreate() {
+        this.createAt = new Date(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updateAt = new Date(System.currentTimeMillis());
+    }
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,7 +72,7 @@ public class Post implements Serializable {
     @Size(max = 250)
     @Column(name = "image")
     private String image;
-    
+
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "start_price")
     private Double startPrice;
@@ -81,7 +92,6 @@ public class Post implements Serializable {
     private Date updateAt;
     @JoinColumn(name = "auction_status", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    @JsonIgnore
     private AuctionStatus auctionStatus;
     @JoinColumn(name = "id_user", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.EAGER)
@@ -98,21 +108,18 @@ public class Post implements Serializable {
     @OneToMany(mappedBy = "idPost")
     @JsonIgnore
     private Collection<Share> shareCollection;
-    
+
     @OneToMany(mappedBy = "idPost")
     @JsonIgnore
     private Collection<PostTag> postTagCollection;
-    
+
     @Transient
     @JsonIgnore
     private MultipartFile file;
 
-
     public Post(Integer id) {
         this.id = id;
     }
-
-    
 
     @XmlTransient
     public Collection<LikePost> getLikePostCollection() {
@@ -184,5 +191,4 @@ public class Post implements Serializable {
         return "com.mycompany.pojo.Post[ id=" + id + " ]";
     }
 
-    
 }

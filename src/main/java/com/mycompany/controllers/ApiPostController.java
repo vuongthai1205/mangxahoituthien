@@ -52,7 +52,7 @@ public class ApiPostController {
         posts.forEach(post -> {
             UserResponseDTO userResponseDTO = new UserResponseDTO();
             PostResponseDTO postResponseDTO = new PostResponseDTO();
-
+            postResponseDTO.setId(post.getId());
             postResponseDTO.setTitle(post.getTitle());
             postResponseDTO.setContent(post.getContent());
             postResponseDTO.setImage(post.getImage());

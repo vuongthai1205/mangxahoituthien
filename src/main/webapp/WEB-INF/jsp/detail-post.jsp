@@ -12,6 +12,7 @@
 <form:form method="post" action="${action}" modelAttribute="post" enctype="multipart/form-data">
     <form:hidden path="id" />
     <form:hidden path="image" />
+    <form:hidden path="idUser.id" />
     <div class="form-floating mb-3 mt-3">
         <label for="name">Tieu de bai viet</label>
         <form:input type="text" class="form-control" 
