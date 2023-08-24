@@ -4,14 +4,16 @@
  */
 package com.mycompany.repository;
 
-import com.mycompany.pojo.AuctionStatus;
-import java.util.List;
+import com.mycompany.pojo.LikePost;
+import com.mycompany.pojo.Post;
+import com.mycompany.pojo.User;
 
 /**
  *
  * @author vuongthai1205
  */
-public interface AuctionStatusRepository {
-    List<AuctionStatus> getAuctionStatuses();
-    AuctionStatus getAuctionStatus(int id);
+public interface LikeRepository {
+    boolean addLike(LikePost likePost);
+    boolean checkUserLiked(User user, Post post);
+    LikePost getLikePost(User user, Post post);
 }

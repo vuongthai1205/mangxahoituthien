@@ -9,16 +9,22 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  *
@@ -26,23 +32,30 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table(name = "like_post")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "LikePost.findAll", query = "SELECT l FROM LikePost l"),
-    @NamedQuery(name = "LikePost.findById", query = "SELECT l FROM LikePost l WHERE l.id = :id"),
-    @NamedQuery(name = "LikePost.findByIsLike", query = "SELECT l FROM LikePost l WHERE l.isLike = :isLike"),
-    @NamedQuery(name = "LikePost.findByCreateAt", query = "SELECT l FROM LikePost l WHERE l.createAt = :createAt"),
-    @NamedQuery(name = "LikePost.findByUpdateAt", query = "SELECT l FROM LikePost l WHERE l.updateAt = :updateAt")})
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class LikePost implements Serializable {
 
+    @PrePersist
+    protected void onCreate() {
+        this.createAt = new Date(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updateAt = new Date(System.currentTimeMillis());
+    }
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @NotNull
     @Column(name = "id")
     private Integer id;
     @Column(name = "is_like")
-    private Short isLike;
+    private short isLike;
     @Column(name = "create_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createAt;
@@ -56,59 +69,9 @@ public class LikePost implements Serializable {
     @ManyToOne
     private User idUser;
 
-    public LikePost() {
-    }
-
-    public LikePost(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Short getIsLike() {
-        return isLike;
-    }
-
-    public void setIsLike(Short isLike) {
-        this.isLike = isLike;
-    }
-
-    public Date getCreateAt() {
-        return createAt;
-    }
-
-    public void setCreateAt(Date createAt) {
-        this.createAt = createAt;
-    }
-
-    public Date getUpdateAt() {
-        return updateAt;
-    }
-
-    public void setUpdateAt(Date updateAt) {
-        this.updateAt = updateAt;
-    }
-
-    public Post getIdPost() {
-        return idPost;
-    }
-
-    public void setIdPost(Post idPost) {
-        this.idPost = idPost;
-    }
-
-    public User getIdUser() {
-        return idUser;
-    }
-
-    public void setIdUser(User idUser) {
-        this.idUser = idUser;
+    public LikePost(Post post, User user) {
+        this.idPost = post;
+        this.idUser = user;
     }
 
     @Override
@@ -135,5 +98,13 @@ public class LikePost implements Serializable {
     public String toString() {
         return "com.mycompany.pojo.LikePost[ id=" + id + " ]";
     }
-    
+
+    public boolean isIsLike() {
+        return isLike == 1;
+    }
+
+    public void setIsLike(boolean isLike) {
+        this.isLike = (short) (isLike ? 1 : 0);
+    }
+
 }

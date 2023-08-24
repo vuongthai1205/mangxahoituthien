@@ -42,7 +42,7 @@
     <div class="form-floating">
         <label for="des">Email</label>
         <form:input type="email" class="form-control" 
-                    path="email" placeholder="Tieu de bai viet" />
+                    path="email" placeholder="Email" />
     </div>
     <div class="form-floating mb-3 mt-3">
         <label for="file">Avatar</label>

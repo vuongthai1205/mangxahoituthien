@@ -25,5 +25,10 @@ public class AuctionStatusServiceImpl implements AuctionStatusService{
     public List<AuctionStatus> getAuctionStatuses() {
         return this.auctionStatusRepository.getAuctionStatuses();
     }
+
+    @Override
+    public AuctionStatus getAuctionStatus(int id) {
+        return this.auctionStatusRepository.getAuctionStatus(id);
+    }
     
 }
