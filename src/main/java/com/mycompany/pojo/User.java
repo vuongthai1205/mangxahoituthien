@@ -140,7 +140,7 @@ public class User implements UserDetails {
     private Collection<Post> postCollection;
     @OneToMany(mappedBy = "idUser")
     @JsonIgnore
-    private Collection<LikePost> likePostCollection;
+    private Set<LikePost> likePost;
     @OneToMany(mappedBy = "idUser")
     @JsonIgnore
     private Collection<ReportUser> reportUserCollection;
@@ -189,15 +189,6 @@ public class User implements UserDetails {
 
     public void setPostCollection(Collection<Post> postCollection) {
         this.postCollection = postCollection;
-    }
-
-    @XmlTransient
-    public Collection<LikePost> getLikePostCollection() {
-        return likePostCollection;
-    }
-
-    public void setLikePostCollection(Collection<LikePost> likePostCollection) {
-        this.likePostCollection = likePostCollection;
     }
 
     @XmlTransient

@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -96,9 +98,8 @@ public class Post implements Serializable {
     @JoinColumn(name = "id_user", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.EAGER)
     private User idUser;
-    @OneToMany(mappedBy = "idPost")
-    @JsonIgnore
-    private Collection<LikePost> likePostCollection;
+    @OneToMany(mappedBy = "idPost",fetch = FetchType.EAGER)
+    private List<LikePost> likePost;
     @OneToMany(mappedBy = "idPost")
     @JsonIgnore
     private Collection<Comment> commentCollection;
@@ -119,15 +120,6 @@ public class Post implements Serializable {
 
     public Post(Integer id) {
         this.id = id;
-    }
-
-    @XmlTransient
-    public Collection<LikePost> getLikePostCollection() {
-        return likePostCollection;
-    }
-
-    public void setLikePostCollection(Collection<LikePost> likePostCollection) {
-        this.likePostCollection = likePostCollection;
     }
 
     @XmlTransient

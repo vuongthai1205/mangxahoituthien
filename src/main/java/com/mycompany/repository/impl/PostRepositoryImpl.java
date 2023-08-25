@@ -63,8 +63,10 @@ public class PostRepositoryImpl implements PostRepository {
                 int p = Integer.parseInt(page);
                 int pageSize = Integer.parseInt(this.env.getProperty("PAGE_SIZE"));
 
-                query.setMaxResults(pageSize);
-                query.setFirstResult((p - 1) * pageSize);
+                if (p > 0) {  // Kiểm tra nếu page > 0 thì áp dụng giới hạn và vị trí bắt đầu
+                    query.setMaxResults(pageSize);
+                    query.setFirstResult((p - 1) * pageSize);
+                }
             }
         }
         return query.getResultList();
@@ -110,6 +112,13 @@ public class PostRepositoryImpl implements PostRepository {
             ex.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public int countPost() {
+        Session s = this.sessionFactory.getObject().getCurrentSession();
+        Query q = s.createQuery("SELECT COUNT(*) FROM Post");
+        return Integer.parseInt(q.getSingleResult().toString());
     }
 
 }
