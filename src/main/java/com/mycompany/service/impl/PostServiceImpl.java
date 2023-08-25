@@ -81,4 +81,9 @@ public class PostServiceImpl implements PostService {
         return this.postRepository.deletePost(id);
     }
 
+    @Override
+    public int countPost() {
+        return this.postRepository.countPost();
+    }
+
 }

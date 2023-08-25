@@ -8,11 +8,13 @@ import com.mycompany.pojo.LikePost;
 import com.mycompany.pojo.Post;
 import com.mycompany.pojo.User;
 import com.mycompany.repository.LikeRepository;
+import java.util.List;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
@@ -88,6 +90,24 @@ public class LikeRepositoryImpl implements LikeRepository{
         LikePost existingLike = session.createQuery(criteriaQuery).uniqueResult();
         
         return existingLike;
+    }
+
+    @Override
+    public List<LikePost> getLikePosts(Post post) {
+        Session session = this.sessionFactory.getObject().getCurrentSession();
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<LikePost> criteriaQuery = criteriaBuilder.createQuery(LikePost.class);
+        
+        Root<LikePost> root = criteriaQuery.from(LikePost.class);
+        
+        criteriaQuery.select(root).where(criteriaBuilder.and(
+                criteriaBuilder.equal(root.get("idPost"), post),
+                criteriaBuilder.equal(root.get("isLike"), 1)
+        ));
+        
+        Query q = session.createQuery(criteriaQuery);
+        
+        return q.getResultList();
     }
     
 }

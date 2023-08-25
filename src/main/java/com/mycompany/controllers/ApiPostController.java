@@ -4,10 +4,15 @@
  */
 package com.mycompany.controllers;
 
+import com.mycompany.DTO.AuctionStatusDTO;
+import com.mycompany.DTO.LikePostDTO;
 import com.mycompany.DTO.PostResponseDTO;
 import com.mycompany.DTO.UserResponseDTO;
+import com.mycompany.pojo.AuctionStatus;
+import com.mycompany.pojo.LikePost;
 import com.mycompany.pojo.Post;
 import com.mycompany.pojo.User;
+import com.mycompany.service.LikeService;
 import com.mycompany.service.PostService;
 import com.mycompany.service.UserService;
 import java.security.Principal;
@@ -15,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +48,10 @@ public class ApiPostController {
     private PostService postService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private LikeService likeService;
+    @Autowired
+    private Environment env;
     
     @GetMapping("/post/")
     @CrossOrigin
@@ -52,13 +62,29 @@ public class ApiPostController {
         posts.forEach(post -> {
             UserResponseDTO userResponseDTO = new UserResponseDTO();
             PostResponseDTO postResponseDTO = new PostResponseDTO();
+            AuctionStatusDTO auctionStatusDTO = new AuctionStatusDTO();
+            
+            List<LikePost> likePosts = this.likeService.getLikePosts(post);
+            List<LikePostDTO> likePostDTOs = new ArrayList<>();
+            likePosts.forEach(likePost->{
+                LikePostDTO likePostDTO = new LikePostDTO();
+                likePostDTO.setId(likePost.getIdUser().getId());
+                likePostDTO.setImage(likePost.getIdUser().getAvatar());
+                likePostDTO.setUsername(likePost.getIdUser().getUsername());
+                
+                likePostDTOs.add(likePostDTO);
+            });
+            auctionStatusDTO.setName(post.getAuctionStatus().getNameAuctionStatus());
+            
             postResponseDTO.setId(post.getId());
             postResponseDTO.setTitle(post.getTitle());
             postResponseDTO.setContent(post.getContent());
             postResponseDTO.setImage(post.getImage());
             postResponseDTO.setCreateAt(post.getCreateAt());
             postResponseDTO.setUpdateAt(post.getUpdateAt());
-
+            
+            postResponseDTO.setAuctionStatus(auctionStatusDTO);
+            postResponseDTO.setLikePost(likePostDTOs);
             userResponseDTO.setUsername(post.getIdUser().getUsername());
             userResponseDTO.setAvatar(post.getIdUser().getAvatar());
 
@@ -87,6 +113,15 @@ public class ApiPostController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable(value = "id") int id) {
         this.postService.deletePost(id);
+    }
+    
+    @GetMapping("/post/count-pages/")
+    public ResponseEntity<?> getPages(){
+        int count = this.postService.countPost();
+        int pageSize = Integer.parseInt(this.env.getProperty("PAGE_SIZE"));
+        int result = (int) Math.ceil(count*1.0/pageSize);
+        
+        return new ResponseEntity<>(result , HttpStatus.OK);
     }
 
 }

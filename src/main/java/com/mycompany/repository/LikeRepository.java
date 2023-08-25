@@ -7,6 +7,7 @@ package com.mycompany.repository;
 import com.mycompany.pojo.LikePost;
 import com.mycompany.pojo.Post;
 import com.mycompany.pojo.User;
+import java.util.List;
 
 /**
  *
@@ -16,4 +17,5 @@ public interface LikeRepository {
     boolean addLike(LikePost likePost);
     boolean checkUserLiked(User user, Post post);
     LikePost getLikePost(User user, Post post);
+    List<LikePost> getLikePosts(Post post);
 }

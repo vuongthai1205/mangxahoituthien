@@ -64,20 +64,4 @@ public class ApiLikeController {
 
         return new ResponseEntity<>("Don't like", HttpStatus.BAD_REQUEST);
     }
-    
-    @GetMapping("post/like/{id}/")
-    public ResponseEntity<?> getLike(Principal user, @PathVariable(value = "id") int id){
-        User u = this.userService.getUserByUsername(user.getName());
-        Post post = this.postService.getPostById(id);
-        if (this.likeService.checkUserLiked(u, post) == true){
-            LikePost likePost = this.likeService.getLikePost(u, post);
-            if (likePost.getIsLike() == 1) {
-                return new ResponseEntity<>(true, HttpStatus.OK);
-            }
-            else{
-                return new ResponseEntity<>(false, HttpStatus.OK);
-            }
-        }
-        return new ResponseEntity<>(false, HttpStatus.OK);
-    }
 }
