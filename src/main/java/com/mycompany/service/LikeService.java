@@ -18,4 +18,6 @@ public interface LikeService {
     boolean checkUserLiked(User user, Post post);
     LikePost getLikePost(User user, Post post);
     List<LikePost> getLikePosts(Post post);
+    List<LikePost> getLikePostsByPost(Post post);
+    boolean deleteLikePost(LikePost likepost);
 }

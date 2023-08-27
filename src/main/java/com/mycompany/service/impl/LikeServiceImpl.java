@@ -44,4 +44,14 @@ public class LikeServiceImpl implements LikeService {
         return this.likeRepository.getLikePosts(post);
     }
 
+    @Override
+    public boolean deleteLikePost(LikePost likepost) {
+        return this.likeRepository.deleteLikePost(likepost);
+    }
+
+    @Override
+    public List<LikePost> getLikePostsByPost(Post post) {
+        return this.likeRepository.getLikePostsByPost(post);
+    }
+
 }

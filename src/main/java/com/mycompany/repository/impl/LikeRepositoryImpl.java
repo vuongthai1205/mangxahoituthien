@@ -109,5 +109,36 @@ public class LikeRepositoryImpl implements LikeRepository{
         
         return q.getResultList();
     }
+
+    @Override
+    public boolean deleteLikePost(LikePost likePost) {
+        Session session = this.sessionFactory.getObject().getCurrentSession();
+        try{
+            session.delete(likePost);
+            return true;
+        }
+        catch(HibernateException ex)
+        {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public List<LikePost> getLikePostsByPost(Post post) {
+        Session session = this.sessionFactory.getObject().getCurrentSession();
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<LikePost> criteriaQuery = criteriaBuilder.createQuery(LikePost.class);
+        
+        Root<LikePost> root = criteriaQuery.from(LikePost.class);
+        
+        criteriaQuery.select(root).where(criteriaBuilder.and(
+                criteriaBuilder.equal(root.get("idPost"), post)
+        ));
+        
+        Query q = session.createQuery(criteriaQuery);
+        
+        return q.getResultList();
+    }
     
 }
