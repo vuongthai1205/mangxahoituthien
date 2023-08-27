@@ -8,7 +8,6 @@ import com.mycompany.DTO.AuctionStatusDTO;
 import com.mycompany.DTO.LikePostDTO;
 import com.mycompany.DTO.PostResponseDTO;
 import com.mycompany.DTO.UserResponseDTO;
-import com.mycompany.pojo.AuctionStatus;
 import com.mycompany.pojo.LikePost;
 import com.mycompany.pojo.Post;
 import com.mycompany.pojo.User;
