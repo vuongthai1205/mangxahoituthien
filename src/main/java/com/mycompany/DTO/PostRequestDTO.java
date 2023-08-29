@@ -23,4 +23,6 @@ public class PostRequestDTO {
     private String title;
     private String content;
     private String image;
+    private int auctionStatus;
+    private Double startPrice;
 }

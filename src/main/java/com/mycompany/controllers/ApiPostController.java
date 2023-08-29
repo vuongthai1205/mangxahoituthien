@@ -6,11 +6,14 @@ package com.mycompany.controllers;
 
 import com.mycompany.DTO.AuctionStatusDTO;
 import com.mycompany.DTO.LikePostDTO;
+import com.mycompany.DTO.PostRequestDTO;
 import com.mycompany.DTO.PostResponseDTO;
 import com.mycompany.DTO.UserResponseDTO;
+import com.mycompany.pojo.AuctionStatus;
 import com.mycompany.pojo.LikePost;
 import com.mycompany.pojo.Post;
 import com.mycompany.pojo.User;
+import com.mycompany.service.AuctionStatusService;
 import com.mycompany.service.LikeService;
 import com.mycompany.service.PostService;
 import com.mycompany.service.UserService;
@@ -32,7 +35,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -50,6 +52,8 @@ public class ApiPostController {
     private UserService userService;
     @Autowired
     private LikeService likeService;
+    @Autowired
+    private AuctionStatusService auctionStatusService;
     @Autowired
     private Environment env;
 
@@ -97,9 +101,17 @@ public class ApiPostController {
     }
 
     @PostMapping(path = "/post/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addPost(@RequestBody Post post, Principal user) {
+    public ResponseEntity<String> addPost(@RequestBody PostRequestDTO postRequest, Principal user) {
         User u = this.userService.getUserByUsername(user.getName());
+        Post post = new Post();
         post.setIdUser(u);
+        post.setImage(postRequest.getImage());
+        post.setContent(postRequest.getContent());
+        post.setTitle(postRequest.getTitle());
+        AuctionStatus auctionStatus = this.auctionStatusService.getAuctionStatus(postRequest.getAuctionStatus());
+
+        post.setAuctionStatus(auctionStatus);
+        post.setStartPrice(postRequest.getStartPrice());
         boolean isAddedOrUpdated = postService.addOrUpdatePost(post);
 
         if (isAddedOrUpdated) {
@@ -110,7 +122,7 @@ public class ApiPostController {
     }
 
     @PutMapping(path = "/post/{id}/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> updatePost(@RequestBody PostResponseDTO postRequest, Principal user, @PathVariable(value = "id") int id) {
+    public ResponseEntity<String> updatePost(@RequestBody PostRequestDTO postRequest, Principal user, @PathVariable(value = "id") int id) {
         User u = this.userService.getUserByUsername(user.getName());
 
         Post post = this.postService.getPostById(id);
@@ -118,6 +130,10 @@ public class ApiPostController {
             post.setTitle(postRequest.getTitle());
             post.setImage(postRequest.getImage());
             post.setContent(postRequest.getContent());
+            AuctionStatus auctionStatus = this.auctionStatusService.getAuctionStatus(postRequest.getAuctionStatus());
+
+            post.setAuctionStatus(auctionStatus);
+            post.setStartPrice(postRequest.getStartPrice());
             if (this.postService.addOrUpdatePost(post)) {
                 return ResponseEntity.status(HttpStatus.OK).body("Post updated successfully");
             } else {
@@ -131,12 +147,12 @@ public class ApiPostController {
 
     @DeleteMapping("/post/{id}/")
     public ResponseEntity<String> delete(@PathVariable(value = "id") int id, Principal user) {
-        
+
         User u = this.userService.getUserByUsername(user.getName());
 
         Post post = this.postService.getPostById(id);
         List<LikePost> likePosts = this.likeService.getLikePostsByPost(post);
-        
+
         if (post.getIdUser().equals(u)) {
             likePosts.forEach(likePost -> {
                 this.likeService.deleteLikePost(likePost);
@@ -149,7 +165,7 @@ public class ApiPostController {
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You can not permission to delete the post");
         }
-        
+
     }
 
     @GetMapping("/post/{id}/")
