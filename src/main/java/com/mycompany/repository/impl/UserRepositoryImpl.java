@@ -104,13 +104,16 @@ public class UserRepositoryImpl implements UserRepository {
         Root root = criteriaQuery.from(User.class);
 
         criteriaQuery.select(root);
+
         if (params != null) {
             List<Predicate> predicates = new ArrayList<>();
             String kw = params.get("kw");
             if (kw != null && !kw.isEmpty()) {
                 predicates.add(criteriaBuilder.like(root.get("username"), String.format("%%%s%%", kw)));
             }
-            criteriaQuery.where(predicates.toArray(Predicate[]::new));
+
+            Predicate[] predicateArray = predicates.toArray(new Predicate[predicates.size()]);
+            criteriaQuery.where(predicateArray);
         }
 
         Query query = session.createQuery(criteriaQuery);
@@ -160,8 +163,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public boolean authUser(String username, String password) {
-        User  u = this.getUserByUsername(username);
-
+        User u = this.getUserByUsername(username);
 
         return this.passEncoder.matches(password, u.getPassword());
     }
