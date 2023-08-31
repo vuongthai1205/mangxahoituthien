@@ -180,9 +180,9 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
-                    <compilerArgs>
+                    <compilerArguments>
                         <endorseddirs>${endorsed.dir}</endorseddirs>
-                    </compilerArgs>
+                    </compilerArguments>
                 </configuration>
             </plugin>
             <plugin>

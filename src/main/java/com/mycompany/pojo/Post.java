@@ -105,7 +105,7 @@ public class Post implements Serializable {
     private Collection<Comment> commentCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idPost")
     @JsonIgnore
-    private Collection<ResultAction> resultActionCollection;
+    private List<Auction> auctionList;
     @OneToMany(mappedBy = "idPost")
     @JsonIgnore
     private Collection<Share> shareCollection;
@@ -129,15 +129,6 @@ public class Post implements Serializable {
 
     public void setCommentCollection(Collection<Comment> commentCollection) {
         this.commentCollection = commentCollection;
-    }
-
-    @XmlTransient
-    public Collection<ResultAction> getResultActionCollection() {
-        return resultActionCollection;
-    }
-
-    public void setResultActionCollection(Collection<ResultAction> resultActionCollection) {
-        this.resultActionCollection = resultActionCollection;
     }
 
     @XmlTransient

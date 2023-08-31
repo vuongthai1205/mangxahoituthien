@@ -78,6 +78,7 @@ public class ApiPostController {
 
                 likePostDTOs.add(likePostDTO);
             });
+            auctionStatusDTO.setId(post.getAuctionStatus().getId());
             auctionStatusDTO.setName(post.getAuctionStatus().getNameAuctionStatus());
 
             postResponseDTO.setId(post.getId());
@@ -91,7 +92,10 @@ public class ApiPostController {
             postResponseDTO.setLikePost(likePostDTOs);
             userResponseDTO.setUsername(post.getIdUser().getUsername());
             userResponseDTO.setAvatar(post.getIdUser().getAvatar());
-
+            if (post.getStartPrice() != null) {
+                postResponseDTO.setStartPrice(post.getStartPrice());
+            }
+            
             postResponseDTO.setUser(userResponseDTO);
             postResponseDTOs.add(postResponseDTO);
 

@@ -149,7 +149,7 @@ public class User implements UserDetails {
     private Collection<Comment> commentCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUser")
     @JsonIgnore
-    private Collection<ResultAction> resultActionCollection;
+    private Collection<Auction> resultActionCollection;
     @OneToMany(mappedBy = "idUser")
     @JsonIgnore
     private Collection<Share> shareCollection;
@@ -210,11 +210,11 @@ public class User implements UserDetails {
     }
 
     @XmlTransient
-    public Collection<ResultAction> getResultActionCollection() {
+    public Collection<Auction> getResultActionCollection() {
         return resultActionCollection;
     }
 
-    public void setResultActionCollection(Collection<ResultAction> resultActionCollection) {
+    public void setResultActionCollection(Collection<Auction> resultActionCollection) {
         this.resultActionCollection = resultActionCollection;
     }
 

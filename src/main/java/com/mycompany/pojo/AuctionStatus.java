@@ -4,6 +4,7 @@
  */
 package com.mycompany.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.util.Collection;
@@ -45,6 +46,7 @@ public class AuctionStatus implements Serializable {
     @Column(name = "name_auction_status")
     private String nameAuctionStatus;
     @OneToMany(mappedBy = "auctionStatus")
+    @JsonIgnore
     private Collection<Post> postCollection;
 
     public AuctionStatus() {

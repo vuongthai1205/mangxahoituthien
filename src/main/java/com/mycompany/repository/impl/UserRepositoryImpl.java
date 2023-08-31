@@ -111,9 +111,7 @@ public class UserRepositoryImpl implements UserRepository {
             if (kw != null && !kw.isEmpty()) {
                 predicates.add(criteriaBuilder.like(root.get("username"), String.format("%%%s%%", kw)));
             }
-
-            Predicate[] predicateArray = predicates.toArray(new Predicate[predicates.size()]);
-            criteriaQuery.where(predicateArray);
+            criteriaQuery.where(predicates.toArray(Predicate[]::new));
         }
 
         Query query = session.createQuery(criteriaQuery);

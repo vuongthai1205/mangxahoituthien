@@ -29,6 +29,7 @@ public class PostResponseDTO {
     private String title;
     private String content;
     private String image;
+    private double startPrice;
     private UserResponseDTO user;
     private AuctionStatusDTO auctionStatus;
     private List<LikePostDTO> likePost;
