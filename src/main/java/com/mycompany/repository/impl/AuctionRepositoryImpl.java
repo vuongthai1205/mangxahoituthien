@@ -60,12 +60,11 @@ public class AuctionRepositoryImpl implements AuctionRepository {
                 criteriaBuilder.equal(root.get("idPost"), post),
                 criteriaBuilder.equal(root.get("idUser"), user)
         ));
-        
+
         Auction auction = session.createQuery(criteriaQuery).uniqueResult();
         if (auction != null) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
@@ -73,16 +72,39 @@ public class AuctionRepositoryImpl implements AuctionRepository {
     @Override
     public List<Auction> getListAuction(Post post) {
         Session session = this.sessionFactory.getObject().getCurrentSession();
-        
+
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Auction> criteriaQuery = criteriaBuilder.createQuery(Auction.class);
-        
+
         Root<Auction> root = criteriaQuery.from(Auction.class);
-        
-        criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("idPost") , post));
+
+        criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("idPost"), post));
         Query q = session.createQuery(criteriaQuery);
-        
+
         return q.getResultList();
+    }
+
+    @Override
+    public Auction getAuctionById(int id) {
+        Session session = this.sessionFactory.getObject().getCurrentSession();
+
+        return session.get(Auction.class, id);
+
+    }
+
+    @Override
+    public boolean updateListAuction(List<Auction> auctions) {
+        try {
+
+            for (Auction auction : auctions) {
+                this.addOrUpdateAuction(auction); // Cập nhật từng phiên đấu giá trong danh sách
+            }
+
+            return true; // Trả về true nếu cập nhật thành công
+        } catch (HibernateException e) {
+            e.printStackTrace();
+            return false; // Trả về false nếu có lỗi xảy ra
+        }
     }
 
 }

@@ -59,6 +59,8 @@ public class Auction implements Serializable {
     private Integer id;
     @Column(name = "price")
     private double price;
+    @Column(name = "is_winner_auctioned")
+    private short isWinnerAuction;
     @Column(name = "create_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createAt;
@@ -71,5 +73,13 @@ public class Auction implements Serializable {
     @JoinColumn(name = "id_user", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private User idUser;
+    
+    public boolean isWinnerAuction() {
+        return isWinnerAuction == 1;
+    }
+
+    public void setIsWinnerAuction(boolean isWinnerAuction) {
+        this.isWinnerAuction = (short) (isWinnerAuction ? 1 : 0);
+    }
     
 }

@@ -17,4 +17,6 @@ public interface AuctionRepository {
     boolean addOrUpdateAuction(Auction auction);
     boolean checkAuctionExist(User user, Post post);
     List<Auction> getListAuction(Post post);
+    Auction getAuctionById(int id);
+    boolean updateListAuction(List<Auction> auctions);
 }

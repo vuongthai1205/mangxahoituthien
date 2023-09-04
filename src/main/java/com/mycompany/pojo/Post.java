@@ -84,8 +84,6 @@ public class Post implements Serializable {
     @Size(max = 45)
     @Column(name = "auction_end_time")
     private String auctionEndTime;
-    @Column(name = "auction_winner_id")
-    private Integer auctionWinnerId;
     @Column(name = "create_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createAt;
