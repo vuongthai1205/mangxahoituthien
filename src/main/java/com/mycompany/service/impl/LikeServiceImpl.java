@@ -9,6 +9,7 @@ import com.mycompany.pojo.Post;
 import com.mycompany.pojo.User;
 import com.mycompany.repository.LikeRepository;
 import com.mycompany.service.LikeService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +18,11 @@ import org.springframework.stereotype.Service;
  * @author vuongthai1205
  */
 @Service
-public class LikeServiceImpl implements LikeService{
-    
+public class LikeServiceImpl implements LikeService {
+
     @Autowired
     private LikeRepository likeRepository;
+
     @Override
     public boolean addLike(LikePost likePost) {
         return this.likeRepository.addLike(likePost);
@@ -35,5 +37,21 @@ public class LikeServiceImpl implements LikeService{
     public LikePost getLikePost(User user, Post post) {
         return this.likeRepository.getLikePost(user, post);
     }
-    
+
+    @Override
+    public List<LikePost> getLikePosts(Post post) {
+
+        return this.likeRepository.getLikePosts(post);
+    }
+
+    @Override
+    public boolean deleteLikePost(LikePost likepost) {
+        return this.likeRepository.deleteLikePost(likepost);
+    }
+
+    @Override
+    public List<LikePost> getLikePostsByPost(Post post) {
+        return this.likeRepository.getLikePostsByPost(post);
+    }
+
 }

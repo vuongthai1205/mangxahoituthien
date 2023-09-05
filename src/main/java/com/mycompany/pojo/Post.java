@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -82,8 +84,6 @@ public class Post implements Serializable {
     @Size(max = 45)
     @Column(name = "auction_end_time")
     private String auctionEndTime;
-    @Column(name = "auction_winner_id")
-    private Integer auctionWinnerId;
     @Column(name = "create_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createAt;
@@ -96,15 +96,14 @@ public class Post implements Serializable {
     @JoinColumn(name = "id_user", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.EAGER)
     private User idUser;
-    @OneToMany(mappedBy = "idPost")
-    @JsonIgnore
-    private Collection<LikePost> likePostCollection;
+    @OneToMany(mappedBy = "idPost",fetch = FetchType.EAGER)
+    private List<LikePost> likePost;
     @OneToMany(mappedBy = "idPost")
     @JsonIgnore
     private Collection<Comment> commentCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idPost")
     @JsonIgnore
-    private Collection<ResultAction> resultActionCollection;
+    private List<Auction> auctionList;
     @OneToMany(mappedBy = "idPost")
     @JsonIgnore
     private Collection<Share> shareCollection;
@@ -122,30 +121,12 @@ public class Post implements Serializable {
     }
 
     @XmlTransient
-    public Collection<LikePost> getLikePostCollection() {
-        return likePostCollection;
-    }
-
-    public void setLikePostCollection(Collection<LikePost> likePostCollection) {
-        this.likePostCollection = likePostCollection;
-    }
-
-    @XmlTransient
     public Collection<Comment> getCommentCollection() {
         return commentCollection;
     }
 
     public void setCommentCollection(Collection<Comment> commentCollection) {
         this.commentCollection = commentCollection;
-    }
-
-    @XmlTransient
-    public Collection<ResultAction> getResultActionCollection() {
-        return resultActionCollection;
-    }
-
-    public void setResultActionCollection(Collection<ResultAction> resultActionCollection) {
-        this.resultActionCollection = resultActionCollection;
     }
 
     @XmlTransient

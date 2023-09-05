@@ -140,7 +140,7 @@ public class User implements UserDetails {
     private Collection<Post> postCollection;
     @OneToMany(mappedBy = "idUser")
     @JsonIgnore
-    private Collection<LikePost> likePostCollection;
+    private Set<LikePost> likePost;
     @OneToMany(mappedBy = "idUser")
     @JsonIgnore
     private Collection<ReportUser> reportUserCollection;
@@ -149,7 +149,7 @@ public class User implements UserDetails {
     private Collection<Comment> commentCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUser")
     @JsonIgnore
-    private Collection<ResultAction> resultActionCollection;
+    private Collection<Auction> resultActionCollection;
     @OneToMany(mappedBy = "idUser")
     @JsonIgnore
     private Collection<Share> shareCollection;
@@ -192,15 +192,6 @@ public class User implements UserDetails {
     }
 
     @XmlTransient
-    public Collection<LikePost> getLikePostCollection() {
-        return likePostCollection;
-    }
-
-    public void setLikePostCollection(Collection<LikePost> likePostCollection) {
-        this.likePostCollection = likePostCollection;
-    }
-
-    @XmlTransient
     public Collection<ReportUser> getReportUserCollection() {
         return reportUserCollection;
     }
@@ -219,11 +210,11 @@ public class User implements UserDetails {
     }
 
     @XmlTransient
-    public Collection<ResultAction> getResultActionCollection() {
+    public Collection<Auction> getResultActionCollection() {
         return resultActionCollection;
     }
 
-    public void setResultActionCollection(Collection<ResultAction> resultActionCollection) {
+    public void setResultActionCollection(Collection<Auction> resultActionCollection) {
         this.resultActionCollection = resultActionCollection;
     }
 

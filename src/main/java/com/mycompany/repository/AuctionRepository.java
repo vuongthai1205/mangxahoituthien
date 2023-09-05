@@ -4,7 +4,7 @@
  */
 package com.mycompany.repository;
 
-import com.mycompany.pojo.LikePost;
+import com.mycompany.pojo.Auction;
 import com.mycompany.pojo.Post;
 import com.mycompany.pojo.User;
 import java.util.List;
@@ -13,11 +13,10 @@ import java.util.List;
  *
  * @author vuongthai1205
  */
-public interface LikeRepository {
-    boolean addLike(LikePost likePost);
-    boolean checkUserLiked(User user, Post post);
-    LikePost getLikePost(User user, Post post);
-    List<LikePost> getLikePosts(Post post);
-    List<LikePost> getLikePostsByPost(Post post);
-    boolean deleteLikePost(LikePost likePost);
+public interface AuctionRepository {
+    boolean addOrUpdateAuction(Auction auction);
+    boolean checkAuctionExist(User user, Post post);
+    List<Auction> getListAuction(Post post);
+    Auction getAuctionById(int id);
+    boolean updateListAuction(List<Auction> auctions);
 }

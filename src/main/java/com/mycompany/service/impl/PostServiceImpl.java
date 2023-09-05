@@ -58,15 +58,6 @@ public class PostServiceImpl implements PostService {
             }
         }
         
-        if(post.getId() != null){
-            AuctionStatus auctionStatus = this.auctionStatusRepository.getAuctionStatus(post.getAuctionStatus().getId());
-        post.setAuctionStatus(auctionStatus);
-            
-        }
-        else{
-            AuctionStatus auctionStatus = this.auctionStatusRepository.getAuctionStatus(1);
-        post.setAuctionStatus(auctionStatus);
-        }
         
         
         
@@ -79,6 +70,11 @@ public class PostServiceImpl implements PostService {
     @Override
     public boolean deletePost(int id) {
         return this.postRepository.deletePost(id);
+    }
+
+    @Override
+    public int countPost() {
+        return this.postRepository.countPost();
     }
 
 }
