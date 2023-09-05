@@ -19,7 +19,10 @@ import lombok.Setter;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuctionStatusDTO {
+public class AuctionResponseDTO {
     private int id;
-    private String name;
+    private String username;
+    private String avatar;
+    private double price;
+    private boolean isWinnerAuctioned;
 }

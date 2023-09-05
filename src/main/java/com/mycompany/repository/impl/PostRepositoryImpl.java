@@ -53,9 +53,10 @@ public class PostRepositoryImpl implements PostRepository {
                 predicates.add(b.like(root.get("title"), String.format("%%%s%%", kw)));
             }
 
-            Predicate[] predicateArray = predicates.toArray(new Predicate[predicates.size()]);
-            q.where(predicateArray);
+            q.where(predicates.toArray(Predicate[]::new));
         }
+        
+        q.orderBy(b.desc(root.get("createAt")));
 
         Query query = session.createQuery(q);
         if (params != null) {

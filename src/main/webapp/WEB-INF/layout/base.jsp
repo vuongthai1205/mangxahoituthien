@@ -68,10 +68,6 @@
         <!-- Page level custom scripts -->
         <script src="<c:url value="/js/demo/datatables-demo.js" /> "></script>
 
-        <script src="<c:url value="/vendor/chart.js/Chart.min.js" /> "></script>
 
-        <!-- Page level custom scripts -->
-        <script src="<c:url value="/js/demo/chart-area-demo.js" /> "></script>
-        <script src="<c:url value="/js/demo/chart-pie-demo.js" /> "></script>
     </body>
 </html>

@@ -111,9 +111,7 @@ public class UserRepositoryImpl implements UserRepository {
             if (kw != null && !kw.isEmpty()) {
                 predicates.add(criteriaBuilder.like(root.get("username"), String.format("%%%s%%", kw)));
             }
-
-            Predicate[] predicateArray = predicates.toArray(new Predicate[predicates.size()]);
-            criteriaQuery.where(predicateArray);
+            criteriaQuery.where(predicates.toArray(Predicate[]::new));
         }
 
         Query query = session.createQuery(criteriaQuery);
@@ -135,10 +133,8 @@ public class UserRepositoryImpl implements UserRepository {
                 .getObject()
                 .getCurrentSession();
         User user = this.getUserById(id);
+        user.getRoles().clear();
         try {
-            Query deleteQuery = session.createQuery("DELETE FROM UserRole ur WHERE ur.idUser = :user");
-            deleteQuery.setParameter("user", user);
-            deleteQuery.executeUpdate();
             session.delete(user);
             return true;
         } catch (HibernateException ex) {

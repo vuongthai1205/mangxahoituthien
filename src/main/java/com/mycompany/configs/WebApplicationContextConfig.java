@@ -7,12 +7,15 @@ package com.mycompany.configs;
 import com.mycompany.formatter.AuctionStatusFormatter;
 import com.mycompany.formatter.CustomDateFormatter;
 import com.mycompany.formatter.RoleFormatter;
+import java.util.Properties;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -44,6 +47,7 @@ public class WebApplicationContextConfig implements WebMvcConfigurer {
         registry.addFormatter(new RoleFormatter());
         registry.addFormatter(new CustomDateFormatter("yyyy/MM/dd"));
     }
+
 
     @Bean(name = "validator")
     public LocalValidatorFactoryBean validator() {
