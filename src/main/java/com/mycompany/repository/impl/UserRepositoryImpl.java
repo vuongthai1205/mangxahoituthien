@@ -133,10 +133,8 @@ public class UserRepositoryImpl implements UserRepository {
                 .getObject()
                 .getCurrentSession();
         User user = this.getUserById(id);
+        user.getRoles().clear();
         try {
-            Query deleteQuery = session.createQuery("DELETE FROM UserRole ur WHERE ur.idUser = :user");
-            deleteQuery.setParameter("user", user);
-            deleteQuery.executeUpdate();
             session.delete(user);
             return true;
         } catch (HibernateException ex) {
