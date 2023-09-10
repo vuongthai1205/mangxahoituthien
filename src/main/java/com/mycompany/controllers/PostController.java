@@ -59,6 +59,6 @@ public class PostController {
             if(this.postService.addOrUpdatePost(post) == true)
                 return "redirect:/post";
         }
-        return "detail-post";
+        return "login";
     }
 }

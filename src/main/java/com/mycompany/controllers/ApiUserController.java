@@ -5,9 +5,12 @@
 package com.mycompany.controllers;
 
 import com.mycompany.DTO.LoginResponse;
+import com.mycompany.DTO.UserResponseDTO;
 import com.mycompany.components.JwtService;
 import com.mycompany.pojo.AuthenticationRequest;
+import com.mycompany.pojo.Role;
 import com.mycompany.pojo.User;
+import com.mycompany.service.RoleService;
 import com.mycompany.service.UserService;
 import java.security.Principal;
 import java.util.List;
@@ -40,6 +43,8 @@ public class ApiUserController {
     private JwtService jwtService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private RoleService roleService;
 
     @PostMapping("/login/")
     public ResponseEntity<LoginResponse> login(@RequestBody AuthenticationRequest authenticationRequest) {
@@ -56,6 +61,30 @@ public class ApiUserController {
         return new ResponseEntity<>(this.userService.getListUser(params), HttpStatus.OK);
     }
 
+    @GetMapping("/user/{id}/")
+    public ResponseEntity<?> getUser(@PathVariable(value = "id") int id) {
+        try {
+            User user = this.userService.getUserById(id);
+            UserResponseDTO userResponseDTO = new UserResponseDTO();
+            userResponseDTO.setUsername(user.getUsername());
+            userResponseDTO.setAvatar(user.getAvatar());
+            userResponseDTO.setId(user.getId());
+            userResponseDTO.setAddress(user.getAddress());
+            userResponseDTO.setCreateAt(user.getCreateAt());
+            userResponseDTO.setUpdateAt(user.getUpdateAt());
+            userResponseDTO.setDateOfBirth(user.getDateOfBirth());
+            userResponseDTO.setEmail(user.getEmail());
+            userResponseDTO.setFirstName(user.getFirstName());
+            userResponseDTO.setLastName(user.getLastName());
+            userResponseDTO.setPhone(user.getPhone());
+            userResponseDTO.setGender(user.getGender());
+            return new ResponseEntity<>(userResponseDTO, HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>("loi", HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
     @DeleteMapping("/user/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable(value = "id") int id) {
@@ -67,10 +96,11 @@ public class ApiUserController {
     @ResponseStatus(HttpStatus.CREATED)
     public void createUser(@RequestBody User user) {
         // Lưu thông tin user vào userService
-
+        Role role = this.roleService.getRole(3);
+        user.addRole(role);
         this.userService.addOrUpdateUser(user);
     }
-    
+
     @GetMapping(path = "/current-user/", produces = MediaType.APPLICATION_JSON_VALUE)
     @CrossOrigin
     public ResponseEntity<User> details(Principal user) {

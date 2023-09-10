@@ -5,6 +5,7 @@
 package com.mycompany.service.impl;
 
 import com.mycompany.pojo.Role;
+import com.mycompany.pojo.User;
 import com.mycompany.repository.RoleRepository;
 import com.mycompany.service.RoleService;
 import java.util.List;
@@ -22,6 +23,16 @@ public class RoleServiceImpl implements RoleService{
     @Override
     public List<Role> getListRoles() {
         return this.roleRepository.getListRoles();
+    }
+
+    @Override
+    public Role getRole(int id) {
+        return this.roleRepository.getRole(id);
+    }
+
+    @Override
+    public List<Role> getListRolesByUser(User user) {
+        return this.roleRepository.getListRolesByUser(user);
     }
     
 }

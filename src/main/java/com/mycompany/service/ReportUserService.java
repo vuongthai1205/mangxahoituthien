@@ -4,7 +4,7 @@
  */
 package com.mycompany.service;
 
-import com.mycompany.pojo.Role;
+import com.mycompany.pojo.ReportUser;
 import com.mycompany.pojo.User;
 import java.util.List;
 
@@ -12,8 +12,10 @@ import java.util.List;
  *
  * @author vuongthai1205
  */
-public interface RoleService {
-    List<Role> getListRoles();
-    Role getRole(int id);
-    List<Role> getListRolesByUser(User user);
+public interface ReportUserService {
+    boolean addReport(ReportUser reportUser);
+    boolean updateReport(ReportUser reportUser);
+    List<ReportUser> getListReportUsers(User user);
+    ReportUser getReportUserById(int id);
+    ReportUser getReportUser(User user, User userReported);
 }

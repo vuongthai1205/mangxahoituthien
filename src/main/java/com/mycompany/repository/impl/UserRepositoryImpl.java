@@ -69,24 +69,9 @@ public class UserRepositoryImpl implements UserRepository {
                 .getCurrentSession();
         try {
             if (user.getId() == null) {
-                if (user.getRole() == null) {
-                    Set<Role> roles = new HashSet<>();
-                    Role role = this.roleRepository.getRole(2);
-                    roles.add(role);
-                    user.setRoles(roles);
-                } else {
-                    Set<Role> roles = new HashSet<>();
-                    Role role = this.roleRepository.getRole(user.getRole().getId());
-                    roles.add(role);
-                    user.setRoles(roles);
-                }
 
                 session.save(user);
             } else {
-                Set<Role> roles = new HashSet<>();
-                Role role = this.roleRepository.getRole(user.getRole().getId());
-                roles.add(role);
-                user.setRoles(roles);
                 session.update(user);
             }
         } catch (HibernateException ex) {

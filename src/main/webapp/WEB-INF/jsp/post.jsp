@@ -9,9 +9,6 @@
 
 <%@ taglib prefix="sec"
            uri="http://www.springframework.org/security/tags" %>
-
-
-
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary">Quản lý bài viết</h6>
@@ -44,12 +41,12 @@
                             <td><c:out value="${post.createAt}"/></td>
                             <td><c:out value="${post.updateAt}"/></td>
                             <td>
-                                <sec:authorize access="hasRole('ROLE_ADMIN')">
+                                <sec:authorize access="hasRole('ROLE_ADMIN') or hasRole('ROLE_MEMBER')">
                                     <c:url value="/api/post/${post.id}" var="apiDel"/>
                                     <a href="<c:url value="/detail-post/${post.id}"/>">Cap nhat</a>
                                     <button class="btn btn-danger" onclick="delPro('${apiDel}', ${post.id})">Xóa</button>
                                 </sec:authorize> 
-                                <sec:authorize access="hasRole('ROLE_MEMBER')">
+                                <sec:authorize access="hasRole('ROLE_CUSTOMER')">
                                     Ban khong co quyen sua hoac xoa
                                 </sec:authorize> 
                             </td>

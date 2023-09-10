@@ -27,23 +27,23 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional
-public class CommentRepositorylmpl implements CommentRepository{
+public class CommentRepositorylmpl implements CommentRepository {
+
     @Autowired
     private LocalSessionFactoryBean sessionFactory;
+
     @Override
     public boolean addComment(Comment comment) {
         Session session = this.sessionFactory.getObject().getCurrentSession();
-        try{
+        try {
             if (comment.getId() == null) {
                 session.save(comment);
-            }
-            else{
+            } else {
                 session.update(comment);
             }
             return true;
-        }
-        catch(HibernateException ex){
-             ex.printStackTrace();
+        } catch (HibernateException ex) {
+            ex.printStackTrace();
             return false;
         }
     }
@@ -53,20 +53,20 @@ public class CommentRepositorylmpl implements CommentRepository{
         Session session = this.sessionFactory.getObject().getCurrentSession();
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Comment> criteriaQuery = criteriaBuilder.createQuery(Comment.class);
-        
+
         Root<Comment> root = criteriaQuery.from(Comment.class);
-        
+
         criteriaQuery.select(root).where(criteriaBuilder.and(
                 criteriaBuilder.equal(root.get("idComment"), post),
                 criteriaBuilder.equal(root.get("idUser"), user)
-            ));
+        ));
         Comment existingComment = session.createQuery(criteriaQuery).uniqueResult();
         if (existingComment != null) {
             return true;
         }
-        
+
         return false;
-        }
+    }
 
     @Override
     public Comment getCommentPost(User user, Post post) {
@@ -75,19 +75,35 @@ public class CommentRepositorylmpl implements CommentRepository{
 
     @Override
     public List<Comment> listCommentPost(Post post) {
-     Session session = this.sessionFactory.getObject().getCurrentSession();
-     CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-     CriteriaQuery<Comment> criteriaQuery = criteriaBuilder.createQuery(Comment.class);
-     
-     Root<Comment> root = criteriaQuery.from(Comment.class);
-     criteriaQuery.select(root).where(criteriaBuilder.and(
-             criteriaBuilder.equal(root.get("idPost"), post)
-             
-     ));
-     Query q = session.createQuery(criteriaQuery);
-        return q.getResultList();
+        Session session = this.sessionFactory.getObject().getCurrentSession();
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Comment> criteriaQuery = criteriaBuilder.createQuery(Comment.class);
+
+        Root<Comment> root = criteriaQuery.from(Comment.class);
+        criteriaQuery.select(root)
+                .where(criteriaBuilder.equal(root.get("idPost"), post))
+                .orderBy(criteriaBuilder.desc(root.get("createAt"))); // Sắp xếp theo thứ tự mới nhất
+
+        Query<Comment> query = session.createQuery(criteriaQuery);
+        return query.getResultList();
     }
-   
-     
-    
+
+    @Override
+    public Comment getCommentById(int id) {
+        Session session = this.sessionFactory.getObject().getCurrentSession();
+        return session.get(Comment.class, id);
+    }
+
+    @Override
+    public boolean deleteComment(Comment comment) {
+        Session session = this.sessionFactory.getObject().getCurrentSession();
+        try {
+            session.delete(comment);
+            return true;
+        } catch (HibernateException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
 }

@@ -7,7 +7,6 @@ package com.mycompany.pojo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -26,8 +25,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -131,7 +128,7 @@ public class User implements UserDetails {
     joinColumns = @JoinColumn(name="id_user"),
             inverseJoinColumns = @JoinColumn(name = "id_role")
     )
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
     
     
     @OneToMany(mappedBy = "idUser")
@@ -179,6 +176,11 @@ public class User implements UserDetails {
         Collection<SimpleGrantedAuthority> authorities=new ArrayList<>();
         roles.stream().forEach(i->authorities.add(new SimpleGrantedAuthority(i.getNameRole())));
         return List.of(new SimpleGrantedAuthority(authorities.toString()));
+    }
+    
+    public void addRole(Role role) {
+        this.roles.add(role);
+        role.getUser().add(this);
     }
 
     

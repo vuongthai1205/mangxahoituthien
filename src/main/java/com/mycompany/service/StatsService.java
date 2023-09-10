@@ -4,16 +4,13 @@
  */
 package com.mycompany.service;
 
-import com.mycompany.pojo.Role;
-import com.mycompany.pojo.User;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author vuongthai1205
  */
-public interface RoleService {
-    List<Role> getListRoles();
-    Role getRole(int id);
-    List<Role> getListRolesByUser(User user);
+public interface StatsService {
+    List<Object[]> stats(Map<String, String> params);
 }

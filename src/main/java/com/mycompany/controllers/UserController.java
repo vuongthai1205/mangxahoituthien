@@ -34,8 +34,6 @@ public class UserController {
     @Autowired
     private RoleService roleService;
 
-    
-
     @ModelAttribute
     public void commAttr(Model model) {
         model.addAttribute("roles", this.roleService.getListRoles());
@@ -63,6 +61,8 @@ public class UserController {
     @PostMapping("/detail-user")
     public String updateUser(@ModelAttribute(value = "user") @Valid User user, BindingResult rs) {
         if (!rs.hasErrors()) {
+            Role role = this.roleService.getRole(user.getRole().getId());
+            user.addRole(role);
             if (this.userService.addOrUpdateUser(user) == true) {
                 return "redirect:/user-manager";
             }
@@ -85,6 +85,8 @@ public class UserController {
     public String signin(Model model, @ModelAttribute(value = "user") User user) {
         String errMsg;
         if (user.getRepeatPassword().equals(user.getPassword())) {
+            Role role = this.roleService.getRole(2);
+            user.addRole(role);
             if (this.userService.addOrUpdateUser(user) == true) {
                 return "redirect:/login";
             } else {
@@ -99,5 +101,5 @@ public class UserController {
 
         return "register";
     }
-    
+
 }

@@ -5,19 +5,23 @@
 package com.mycompany.controllers;
 
 import com.mycompany.DTO.AuctionStatusDTO;
+import com.mycompany.DTO.CommentResponseDTO;
 import com.mycompany.DTO.LikePostDTO;
 import com.mycompany.DTO.PostRequestDTO;
 import com.mycompany.DTO.PostResponseDTO;
 import com.mycompany.DTO.UserResponseDTO;
 import com.mycompany.pojo.AuctionStatus;
+import com.mycompany.pojo.Comment;
 import com.mycompany.pojo.LikePost;
 import com.mycompany.pojo.Post;
 import com.mycompany.pojo.User;
 import com.mycompany.service.AuctionStatusService;
+import com.mycompany.service.CommentService;
 import com.mycompany.service.LikeService;
 import com.mycompany.service.PostService;
 import com.mycompany.service.UserService;
 import java.security.Principal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 @RequestMapping("/api")
 public class ApiPostController {
-
+    public static final SimpleDateFormat F = new SimpleDateFormat("dd-MM-yyyy");
     @Autowired
     private PostService postService;
     @Autowired
@@ -56,6 +60,9 @@ public class ApiPostController {
     private AuctionStatusService auctionStatusService;
     @Autowired
     private Environment env;
+
+    @Autowired
+    private CommentService commentService;
 
     @GetMapping("/post/")
     @CrossOrigin
@@ -78,6 +85,18 @@ public class ApiPostController {
 
                 likePostDTOs.add(likePostDTO);
             });
+
+            List<Comment> listComments = this.commentService.listCommentPost(post);
+            List<CommentResponseDTO> listCommentDTOs = new ArrayList<>();
+            listComments.forEach(cmt -> {
+                CommentResponseDTO commentDTO = new CommentResponseDTO();
+                commentDTO.setId(cmt.getId());
+                commentDTO.setImage(cmt.getIdUser().getAvatar());
+                commentDTO.setUsername(cmt.getIdUser().getUsername());
+                commentDTO.setContent(cmt.getContent());
+                commentDTO.setIdUser(cmt.getIdUser().getId());
+                listCommentDTOs.add(commentDTO);
+            });
             auctionStatusDTO.setId(post.getAuctionStatus().getId());
             auctionStatusDTO.setName(post.getAuctionStatus().getNameAuctionStatus());
 
@@ -90,15 +109,35 @@ public class ApiPostController {
 
             postResponseDTO.setAuctionStatus(auctionStatusDTO);
             postResponseDTO.setLikePost(likePostDTOs);
+            postResponseDTO.setListComment(listCommentDTOs);
+            
             userResponseDTO.setUsername(post.getIdUser().getUsername());
             userResponseDTO.setAvatar(post.getIdUser().getAvatar());
+            userResponseDTO.setId(post.getIdUser().getId());
+            userResponseDTO.setAddress(post.getIdUser().getAddress());
+            userResponseDTO.setCreateAt(post.getIdUser().getCreateAt());
+            userResponseDTO.setUpdateAt(post.getIdUser().getUpdateAt());
+            userResponseDTO.setDateOfBirth(post.getIdUser().getDateOfBirth());
+            userResponseDTO.setEmail(post.getIdUser().getEmail());
+            userResponseDTO.setFirstName(post.getIdUser().getFirstName());
+            userResponseDTO.setLastName(post.getIdUser().getLastName());
+            userResponseDTO.setPhone(post.getIdUser().getPhone());
+            userResponseDTO.setGender(post.getIdUser().getGender());
             if (post.getStartPrice() != null) {
                 postResponseDTO.setStartPrice(post.getStartPrice());
             }
-            
+
             postResponseDTO.setUser(userResponseDTO);
             postResponseDTOs.add(postResponseDTO);
-
+            if (post.getAuctionEndTime() != null) {
+                postResponseDTO.setEndAuctionTime(F.format(post.getAuctionEndTime()));
+            }
+            
+            if (post.getAuctionStartTime() != null) {
+                 postResponseDTO.setStartAuctionTime(F.format(post.getAuctionStartTime()));
+            }
+            
+           
         });
 
         return new ResponseEntity<>(postResponseDTOs, HttpStatus.OK);
@@ -116,8 +155,10 @@ public class ApiPostController {
 
         post.setAuctionStatus(auctionStatus);
         post.setStartPrice(postRequest.getStartPrice());
+        post.setAuctionStartTime(postRequest.getAuctionStartTime());
+        post.setAuctionEndTime(postRequest.getAuctionEndTime());
         boolean isAddedOrUpdated = postService.addOrUpdatePost(post);
-
+        
         if (isAddedOrUpdated) {
             return ResponseEntity.status(HttpStatus.CREATED).body("Post added or updated successfully");
         } else {
@@ -138,6 +179,8 @@ public class ApiPostController {
 
             post.setAuctionStatus(auctionStatus);
             post.setStartPrice(postRequest.getStartPrice());
+            post.setAuctionStartTime(postRequest.getAuctionStartTime());
+            post.setAuctionEndTime(postRequest.getAuctionEndTime());
             if (this.postService.addOrUpdatePost(post)) {
                 return ResponseEntity.status(HttpStatus.OK).body("Post updated successfully");
             } else {
@@ -155,12 +198,8 @@ public class ApiPostController {
         User u = this.userService.getUserByUsername(user.getName());
 
         Post post = this.postService.getPostById(id);
-        List<LikePost> likePosts = this.likeService.getLikePostsByPost(post);
 
         if (post.getIdUser().equals(u)) {
-            likePosts.forEach(likePost -> {
-                this.likeService.deleteLikePost(likePost);
-            });
             if (this.postService.deletePost(post.getId())) {
                 return ResponseEntity.status(HttpStatus.OK).body("Post delete successfully");
             } else {

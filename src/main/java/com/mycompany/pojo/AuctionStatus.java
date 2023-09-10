@@ -22,6 +22,10 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  *
@@ -29,11 +33,10 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "auction_status")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "AuctionStatus.findAll", query = "SELECT a FROM AuctionStatus a"),
-    @NamedQuery(name = "AuctionStatus.findById", query = "SELECT a FROM AuctionStatus a WHERE a.id = :id"),
-    @NamedQuery(name = "AuctionStatus.findByNameAuctionStatus", query = "SELECT a FROM AuctionStatus a WHERE a.nameAuctionStatus = :nameAuctionStatus")})
+@Getter
+@Setter
+@NoArgsConstructor
+@Data
 public class AuctionStatus implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -48,37 +51,8 @@ public class AuctionStatus implements Serializable {
     @OneToMany(mappedBy = "auctionStatus")
     @JsonIgnore
     private Collection<Post> postCollection;
-
-    public AuctionStatus() {
-    }
-
-    public AuctionStatus(Integer id) {
+    public AuctionStatus(int id){
         this.id = id;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getNameAuctionStatus() {
-        return nameAuctionStatus;
-    }
-
-    public void setNameAuctionStatus(String nameAuctionStatus) {
-        this.nameAuctionStatus = nameAuctionStatus;
-    }
-
-    @XmlTransient
-    public Collection<Post> getPostCollection() {
-        return postCollection;
-    }
-
-    public void setPostCollection(Collection<Post> postCollection) {
-        this.postCollection = postCollection;
     }
 
     @Override

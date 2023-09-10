@@ -44,6 +44,11 @@ Software Foundation//DTD Tiles Configuration 3.0//EN"
         <put-attribute name="content"
                        value="/WEB-INF/jsp/add-user.jsp" />
     </definition>
+    <definition name="stats" extends="baseLayout">
+        <put-attribute name="title" value="Stats" />
+        <put-attribute name="content"
+                       value="/WEB-INF/jsp/stats.jsp" />
+    </definition>
     <definition name="login" extends="baseLayout">
         <put-attribute name="title" value="Dang nhap" />
         <put-attribute name="content"
@@ -59,6 +64,28 @@ Software Foundation//DTD Tiles Configuration 3.0//EN"
         <put-attribute name="title" value="Dang ky" />
         <put-attribute name="content"
                        value="/WEB-INF/jsp/register.jsp"/>
+        <put-attribute name="footer"
+                       value=""        />
+        <put-attribute name="header"
+                       value=""        />
+        <put-attribute name="sidebar"
+                       value=""        />
+    </definition>
+    <definition name="error" extends="baseLayout">
+        <put-attribute name="title" value="Loi" />
+        <put-attribute name="content"
+                       value="/WEB-INF/jsp/error.jsp"/>
+        <put-attribute name="footer"
+                       value=""        />
+        <put-attribute name="header"
+                       value=""        />
+        <put-attribute name="sidebar"
+                       value=""        />
+    </definition>
+    <definition name="databaseError" extends="baseLayout">
+        <put-attribute name="title" value="Loi database" />
+        <put-attribute name="content"
+                       value="/WEB-INF/jsp/databaseError.jsp"/>
         <put-attribute name="footer"
                        value=""        />
         <put-attribute name="header"

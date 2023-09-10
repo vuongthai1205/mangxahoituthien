@@ -52,7 +52,12 @@ public class Commentlmpl implements CommentService {
 
     @Override
     public boolean deleteComment(Comment delcomment) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return this.commentRepository.deleteComment(delcomment);
+    }
+
+    @Override
+    public Comment getCommentById(int id) {
+        return this.commentRepository.getCommentById(id);
     }
     
 }
