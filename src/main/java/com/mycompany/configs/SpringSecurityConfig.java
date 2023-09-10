@@ -12,6 +12,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -49,17 +50,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         return configuration.getAuthenticationManager();
     }
 
-    private String jwtSecret = "1205";
-
-    private long jwtExpiration = 3600000;
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth)
             throws Exception {
         auth.userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder());
     }
-
 
     @Bean
     public Cloudinary cloudinary() {
@@ -88,7 +84,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .accessDeniedPage("/login?accessDenied");
 
         http.authorizeRequests()
-                .antMatchers("/**").permitAll();
+                .antMatchers("/").permitAll()
+                .antMatchers(HttpMethod.GET, "/post/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MEMBER')")
+                .antMatchers(HttpMethod.GET, "/user-manager/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MEMBER')")
+                .antMatchers(HttpMethod.GET, "/detail-post/**").access("hasRole('ROLE_ADMIN')")
+                .antMatchers(HttpMethod.GET, "/stats/**").access("hasRole('ROLE_ADMIN')");
 
         http.csrf().disable();
     }

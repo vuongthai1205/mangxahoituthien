@@ -6,9 +6,16 @@
 package com.mycompany.controllers;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mycompany.service.StatsService;
+import java.util.List;
+import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -16,14 +23,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class IndexController {
-
+    @Autowired  
+    private StatsService statsService;
     
     
     @RequestMapping(value = "/")
-    public String index(Model model) {
-       
-        
+    public String index(Model model){
         return "index";
+    }
+    
+    @RequestMapping(value = "/stats")
+    public String stats(Model model, @RequestParam Map<String, String> params) throws JsonProcessingException {
+        List<Object[]> statsData = statsService.stats(params);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String statsDataJson = objectMapper.writeValueAsString(statsData);
+        model.addAttribute("statsData", statsDataJson);
+        return "stats";
     }
     
     

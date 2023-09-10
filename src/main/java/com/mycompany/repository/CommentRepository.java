@@ -22,4 +22,7 @@ public interface CommentRepository {
     Comment getCommentPost(User user, Post post);
 
     List<Comment> listCommentPost(Post post);
+    
+    Comment getCommentById(int id);
+    boolean deleteComment(Comment comment);
 }

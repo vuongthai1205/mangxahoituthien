@@ -15,6 +15,7 @@ import com.mycompany.service.PostService;
 import com.mycompany.service.UserService;
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -38,14 +39,14 @@ import org.springframework.stereotype.Service;
 @Service("userDetailsService")
 public class UserServiceImpl implements UserService {
 
+    public static final SimpleDateFormat F = new SimpleDateFormat("yyyy-MM-dd");
     @Autowired
     private UserRepository userRepository;
-    
+
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
     @Autowired
     private Cloudinary cloudinary;
-    private CustomDateFormatter customDateFormatter;
 
     @Override
     public List<User> getUsers(String name) {
@@ -60,12 +61,10 @@ public class UserServiceImpl implements UserService {
         }
         User u = users.get(0);
         Set<GrantedAuthority> authorities = new HashSet<>();
-            
-        u.getRoles().forEach(item  -> {
+
+        u.getRoles().forEach(item -> {
             authorities.add(new SimpleGrantedAuthority(item.getNameRole()));
         });
-            
-        
 
         return new org.springframework.security.core.userdetails.User(
                 u.getUsername(), u.getPassword(), authorities);
@@ -85,16 +84,13 @@ public class UserServiceImpl implements UserService {
             }
             user.setPassword(passwordEncoder.encode(pass));
             if (user.getDateString() != null) {
-                customDateFormatter = new CustomDateFormatter("yyyy-MM-dd");
                 try {
-                    Date dateOfBirth = customDateFormatter.parse(user.getDateString(), Locale.ITALY);
+                    Date dateOfBirth = F.parse(user.getDateString());
                     user.setDateOfBirth(dateOfBirth);
                 } catch (ParseException ex) {
                     Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            
-            
 
             // Lưu user vào cơ sở dữ liệu trước khi tạo userRole
             this.userRepository.addOrUpdateUser(user);
@@ -109,8 +105,6 @@ public class UserServiceImpl implements UserService {
                     Logger.getLogger(PostService.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-
-            
 
             this.userRepository.addOrUpdateUser(user);
             return true;
@@ -140,14 +134,13 @@ public class UserServiceImpl implements UserService {
             throw new UsernameNotFoundException("Không tồn tại!");
         }
         User u = users.get(0);
-        if (u != null){
-            if (passwordEncoder.matches( password, u.getPassword()) == true) {
+        if (u != null) {
+            if (passwordEncoder.matches(password, u.getPassword()) == true) {
                 return 1;
-            }
-            else{
+            } else {
                 return 2;
             }
-            
+
         }
         return 0;
     }

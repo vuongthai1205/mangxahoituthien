@@ -5,7 +5,9 @@
 package com.mycompany.repository.impl;
 
 import com.mycompany.pojo.Post;
+import com.mycompany.pojo.User;
 import com.mycompany.repository.PostRepository;
+import com.mycompany.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +35,8 @@ public class PostRepositoryImpl implements PostRepository {
     @Autowired
     private LocalSessionFactoryBean sessionFactory;
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private Environment env;
 
     @Override
@@ -53,9 +57,19 @@ public class PostRepositoryImpl implements PostRepository {
                 predicates.add(b.like(root.get("title"), String.format("%%%s%%", kw)));
             }
 
-            q.where(predicates.toArray(Predicate[]::new));
+            String iduser = params.get("iduser");
+            // Lấy tham số iduser từ Map
+            
+            if (iduser != null && !iduser.isEmpty()) {
+                User u = this.userRepository.getUserById(Integer.parseInt(iduser));
+                predicates.add(b.equal(root.get("idUser"), u)); // Thêm điều kiện lọc theo iduser
+            }
+
+            if (!predicates.isEmpty()) {
+                q.where(predicates.toArray(Predicate[]::new));
+            }
         }
-        
+
         q.orderBy(b.desc(root.get("createAt")));
 
         Query query = session.createQuery(q);

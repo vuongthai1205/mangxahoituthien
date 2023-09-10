@@ -4,16 +4,16 @@
  */
 package com.mycompany.service;
 
-import com.mycompany.pojo.Role;
-import com.mycompany.pojo.User;
-import java.util.List;
+import com.mycompany.pojo.HashTag;
 
 /**
  *
  * @author vuongthai1205
  */
-public interface RoleService {
-    List<Role> getListRoles();
-    Role getRole(int id);
-    List<Role> getListRolesByUser(User user);
+public interface TagService {
+    boolean addOrUpdateTag(HashTag hashTag);
+    boolean checkTag(String content);
+    HashTag getTagByContent(String content);
+    HashTag getTagById(int id);
+    boolean deleteTag(HashTag hashTag);
 }

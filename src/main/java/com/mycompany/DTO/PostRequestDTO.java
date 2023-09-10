@@ -4,6 +4,8 @@
  */
 package com.mycompany.DTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -23,6 +25,10 @@ public class PostRequestDTO {
     private String title;
     private String content;
     private String image;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private Date auctionStartTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private Date auctionEndTime;
     private int auctionStatus;
     private Double startPrice;
 }

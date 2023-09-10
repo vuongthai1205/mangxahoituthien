@@ -15,13 +15,20 @@ import org.springframework.security.core.userdetails.UserDetailsService;
  *
  * @author vuongthai1205
  */
-public interface CommentService{
+public interface CommentService {
+
     boolean addComment(Comment comment);
+
     boolean checkUserComment(User user, Post post);
+
     Comment getCommentPost(User user, Post post);
+
     List<Comment> listCommentPost(Post post);
-    public boolean editComment(Comment cmt,String newCmt);
+
+    public boolean editComment(Comment cmt, String newCmt);
+
     boolean deleteComment(Comment delcomment);
 
+    Comment getCommentById(int id);
 
 }

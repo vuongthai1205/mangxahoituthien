@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.Basic;
@@ -20,7 +21,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
@@ -81,9 +84,9 @@ public class Post implements Serializable {
     @Column(name = "auction_start_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date auctionStartTime;
-    @Size(max = 45)
     @Column(name = "auction_end_time")
-    private String auctionEndTime;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date auctionEndTime;
     @Column(name = "create_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createAt;
@@ -96,11 +99,11 @@ public class Post implements Serializable {
     @JoinColumn(name = "id_user", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.EAGER)
     private User idUser;
-    @OneToMany(mappedBy = "idPost",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "idPost", cascade = CascadeType.ALL)
     private List<LikePost> likePost;
-    @OneToMany(mappedBy = "idPost")
+    @OneToMany(mappedBy = "idPost", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Collection<Comment> commentCollection;
+    private List<Comment> commentCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idPost")
     @JsonIgnore
     private List<Auction> auctionList;
@@ -108,9 +111,15 @@ public class Post implements Serializable {
     @JsonIgnore
     private Collection<Share> shareCollection;
 
-    @OneToMany(mappedBy = "idPost")
-    @JsonIgnore
-    private Collection<PostTag> postTagCollection;
+    @ManyToMany(fetch = FetchType.EAGER,
+            cascade = {
+                CascadeType.PERSIST,
+                CascadeType.MERGE
+            })
+    @JoinTable(name = "post_tag",
+            joinColumns = @JoinColumn(name = "id_post"),
+            inverseJoinColumns = @JoinColumn(name = "id_tag"))
+    private Set<HashTag> hashTags = new HashSet<>();
 
     @Transient
     @JsonIgnore
@@ -120,13 +129,14 @@ public class Post implements Serializable {
         this.id = id;
     }
 
-    @XmlTransient
-    public Collection<Comment> getCommentCollection() {
-        return commentCollection;
+    public void addTag(HashTag tag) {
+        this.hashTags.add(tag);
+        tag.getPosts().add(this);
     }
 
-    public void setCommentCollection(Collection<Comment> commentCollection) {
-        this.commentCollection = commentCollection;
+    public void removeHashTag(HashTag hashTag) {
+        this.hashTags.remove(hashTag);
+        hashTag.getPosts().remove(this);
     }
 
     @XmlTransient
@@ -136,15 +146,6 @@ public class Post implements Serializable {
 
     public void setShareCollection(Collection<Share> shareCollection) {
         this.shareCollection = shareCollection;
-    }
-
-    @XmlTransient
-    public Collection<PostTag> getPostTagCollection() {
-        return postTagCollection;
-    }
-
-    public void setPostTagCollection(Collection<PostTag> postTagCollection) {
-        this.postTagCollection = postTagCollection;
     }
 
     @Override
